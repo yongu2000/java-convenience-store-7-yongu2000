@@ -23,7 +23,7 @@ public class Product {
     @Override
     public String toString() {
         String promotionString = "";
-        if (promotion != null) promotionString = promotion.getName();
+        if (promotion != null) promotionString = promotion.toString();
         return String.format("- %s %d원 %s %s", name, price, quantity, promotionString).trim();
     }
 }

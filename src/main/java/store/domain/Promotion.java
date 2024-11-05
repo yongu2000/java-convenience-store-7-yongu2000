@@ -21,7 +21,8 @@ public class Promotion {
         return new Promotion(name, buy, get, startDate, endDate);
     }
 
-    public String getName() {
+    @Override
+    public String toString() {
         return name;
     }
 }

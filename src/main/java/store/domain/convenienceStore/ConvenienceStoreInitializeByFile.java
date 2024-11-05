@@ -82,7 +82,7 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
         Promotion promotion = null;
         if (!split[3].equals("null")) {
             promotion = promotions.stream()
-                .filter(p -> p.getName().equals(split[3]))
+                .filter(p -> p.toString().equals(split[3]))
                 .findFirst()
                 .orElse(null);
         }

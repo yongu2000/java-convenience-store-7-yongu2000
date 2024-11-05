@@ -1,7 +1,12 @@
 package store;
 
+import store.domain.convenienceStore.ConvenienceStore;
+import store.domain.convenienceStore.ConvenienceStoreInitializeByFile;
+
 public class Application {
     public static void main(String[] args) {
-        // TODO: 프로그램 구현
+        ConvenienceStore convenienceStore = new ConvenienceStore(new ConvenienceStoreInitializeByFile());
+        System.out.println(convenienceStore);
+
     }
 }

@@ -11,8 +11,8 @@ public class Application {
         ConvenienceStore convenienceStore = new ConvenienceStore(new ConvenienceStoreInitializeByFile());
         System.out.println(convenienceStore);
         StringToOrderProductsParser stringToOrderProductsParser = new StringToOrderProductsParser();
-        OrderProducts orderProducts = stringToOrderProductsParser.parse("[사이다-2],[감자칩-1]");
+        OrderProducts orderProducts = stringToOrderProductsParser.parse("[콜라-3]");
         Order order = Order.createOrder(orderProducts);
-
+        convenienceStore.checkout(order);
     }
 }

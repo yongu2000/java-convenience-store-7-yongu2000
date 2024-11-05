@@ -6,15 +6,15 @@ public class Promotion {
     private final String name;
     private final int buy;
     private final int get;
-    private final LocalDate start_date;
-    private final LocalDate end_date;
+    private final LocalDate startDate;
+    private final LocalDate endDate;
 
     private Promotion(String name, int buy, int get, LocalDate startDate, LocalDate endDate) {
         this.name = name;
         this.buy = buy;
         this.get = get;
-        start_date = startDate;
-        end_date = endDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public static Promotion of(String name, int buy, int get, LocalDate startDate, LocalDate endDate) {
@@ -24,5 +24,13 @@ public class Promotion {
     @Override
     public String toString() {
         return name;
+    }
+
+    public boolean checkAvailable(LocalDate orderDate) {
+        return orderDate.isAfter(startDate) && orderDate.isBefore(endDate);
+    }
+
+    public int getPromotionQuantity(int orderProductQuantity) {
+        return orderProductQuantity / (buy + get);
     }
 }

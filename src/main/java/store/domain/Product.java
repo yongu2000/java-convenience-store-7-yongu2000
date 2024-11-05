@@ -1,6 +1,7 @@
 package store.domain;
 
-import java.util.Optional;
+import java.time.LocalDate;
+import store.domain.order.OrderProduct;
 
 public class Product {
 
@@ -25,5 +26,33 @@ public class Product {
         String promotionString = "";
         if (promotion != null) promotionString = promotion.toString();
         return String.format("- %s %d원 %s %s", name, price, quantity, promotionString).trim();
+    }
+
+    public boolean hasPromotion() {
+        return promotion != null;
+    }
+
+    public boolean equals(OrderProduct orderProduct) {
+        return orderProduct.getName().equals(name);
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public boolean checkIfPromotionAvailable(LocalDate orderDate) {
+        return promotion.checkAvailable(orderDate);
+    }
+
+    public void removeQuantity(int value) {
+        quantity -= value;
+    }
+
+    public void setQuantity(int value) {
+        quantity = value;
+    }
+
+    public int applyPromotionQuantity(int orderProductQuantity) {
+        return promotion.getPromotionQuantity(orderProductQuantity);
     }
 }

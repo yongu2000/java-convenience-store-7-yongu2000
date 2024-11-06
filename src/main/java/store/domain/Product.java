@@ -21,6 +21,11 @@ public class Product {
         return new Product(name, price, quantity, promotion);
     }
 
+    public static Product of(Product product, int quantity) {
+        product.removeQuantity(quantity);
+        return new Product(product.name, product.price, quantity, product.promotion);
+    }
+
     @Override
     public String toString() {
         String promotionString = "";
@@ -32,8 +37,8 @@ public class Product {
         return promotion != null;
     }
 
-    public boolean equals(OrderProduct orderProduct) {
-        return orderProduct.getName().equals(name);
+    public boolean equals(String productName) {
+        return productName.equals(name);
     }
 
     public int getQuantity() {

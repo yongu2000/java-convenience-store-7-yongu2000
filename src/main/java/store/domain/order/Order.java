@@ -32,13 +32,11 @@ public class Order {
         return orderDate;
     }
 
-    public void addPurchasedProducts(Product product, int quantity) {
-        product.setQuantity(quantity);
-        purchasedProducts.add(product);
+    public void addPurchasedProducts(Product product, int orderQuantity) {
+        purchasedProducts.add(Product.of(product, orderQuantity));
     }
 
-    public void addPurchasedPromotionProducts(Product promotionProduct, int quantity) {
-        promotionProduct.setQuantity(quantity);
-        purchasedPromotionProducts.add(promotionProduct);
+    public void addPurchasedPromotionProducts(Product promotionProduct, int orderQuantity) {
+        purchasedPromotionProducts.add(Product.of(promotionProduct, orderQuantity));
     }
 }

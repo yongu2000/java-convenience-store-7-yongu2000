@@ -2,7 +2,6 @@ package store.domain;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import store.domain.order.OrderProduct;
 
 public class Products {
 
@@ -23,11 +22,11 @@ public class Products {
             .collect(Collectors.joining("\n"));
     }
 
-    public Product findPromotionProduct(OrderProduct orderProduct) {
-        return products.stream().filter(p -> p.equals(orderProduct) && p.hasPromotion()).findFirst().orElse(null);
+    public Product findPromotionProductByName(String productName) {
+        return products.stream().filter(p -> p.equals(productName) && p.hasPromotion()).findFirst().orElse(null);
     }
 
-    public Product findProduct(OrderProduct orderProduct) {
-        return products.stream().filter(p -> p.equals(orderProduct) && !p.hasPromotion()).findFirst().orElse(null);
+    public Product findProductByName(String productName) {
+        return products.stream().filter(p -> p.equals(productName) && !p.hasPromotion()).findFirst().orElse(null);
     }
 }

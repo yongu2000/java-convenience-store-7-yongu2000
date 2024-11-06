@@ -1,4 +1,4 @@
-package store.domain;
+package store.domain.product;
 
 import java.time.LocalDate;
 

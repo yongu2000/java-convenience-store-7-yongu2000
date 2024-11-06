@@ -1,4 +1,4 @@
-package store.domain;
+package store.domain.product;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,11 +22,11 @@ public class Products {
             .collect(Collectors.joining("\n"));
     }
 
-    public Product findPromotionProductByName(String productName) {
-        return products.stream().filter(p -> p.equals(productName) && p.hasPromotion()).findFirst().orElse(null);
+    public PromotionProduct findPromotionProductByName(String productName) {
+        return (PromotionProduct) products.stream().filter(p -> p.equals(productName) && p instanceof PromotionProduct).findFirst().orElse(null);
     }
 
-    public Product findProductByName(String productName) {
-        return products.stream().filter(p -> p.equals(productName) && !p.hasPromotion()).findFirst().orElse(null);
+    public CommonProduct findProductByName(String productName) {
+        return (CommonProduct) products.stream().filter(p -> p.equals(productName) && p instanceof CommonProduct).findFirst().orElse(null);
     }
 }

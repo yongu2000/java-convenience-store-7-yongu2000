@@ -3,21 +3,21 @@ package store.domain.order;
 import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import store.domain.Product;
-import store.domain.Products;
+import store.domain.product.CommonProduct;
+import store.domain.product.Product;
+import store.domain.product.Products;
+import store.domain.product.PromotionProduct;
 
 public class Order {
 
     private final OrderProducts orderProducts;
     private final Products purchasedProducts;
-    private final Products purchasedPromotionProducts;
     private final LocalDate orderDate;
 
     private Order(OrderProducts orderProducts) {
         this.orderProducts = orderProducts;
-        this.orderDate = LocalDate.from(DateTimes.now());
         this.purchasedProducts = new Products(new ArrayList<>());
-        this.purchasedPromotionProducts = new Products(new ArrayList<>());
+        this.orderDate = LocalDate.from(DateTimes.now());
     }
 
     public static Order createOrder(OrderProducts orderProducts) {
@@ -33,10 +33,7 @@ public class Order {
     }
 
     public void addPurchasedProducts(Product product, int orderQuantity) {
-        purchasedProducts.add(Product.of(product, orderQuantity));
-    }
-
-    public void addPurchasedPromotionProducts(Product promotionProduct, int orderQuantity) {
-        purchasedPromotionProducts.add(Product.of(promotionProduct, orderQuantity));
+        if (product instanceof CommonProduct) purchasedProducts.add(new CommonProduct((CommonProduct) product, orderQuantity));
+        if (product instanceof PromotionProduct) purchasedProducts.add(new PromotionProduct((PromotionProduct) product, orderQuantity));
     }
 }

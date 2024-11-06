@@ -7,10 +7,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import store.domain.Product;
-import store.domain.Products;
-import store.domain.Promotion;
-import store.domain.Promotions;
+import store.domain.product.CommonProduct;
+import store.domain.product.Product;
+import store.domain.product.Products;
+import store.domain.product.Promotion;
+import store.domain.product.PromotionProduct;
+import store.domain.product.Promotions;
 
 public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitialize {
 
@@ -79,13 +81,13 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
         int price = Integer.parseInt(split[1]);
         int quantity = Integer.parseInt(split[2]);
 
-        Promotion promotion = null;
         if (!split[3].equals("null")) {
-            promotion = promotions.stream()
+            Promotion promotion = promotions.stream()
                 .filter(p -> p.toString().equals(split[3]))
                 .findFirst()
                 .orElse(null);
+            return new PromotionProduct(name, price, quantity, promotion);
         }
-        return Product.of(name, price, quantity, promotion);
+        return new CommonProduct(name, price, quantity);
     }
 }

@@ -1,11 +1,13 @@
 package store.service;
 
 import java.time.LocalDate;
-import store.domain.Product;
+import store.domain.product.CommonProduct;
+import store.domain.product.Product;
 import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.order.Order;
 import store.domain.order.OrderProduct;
 import store.domain.order.OrderProducts;
+import store.domain.product.PromotionProduct;
 
 public class ConvenienceStoreService {
 
@@ -23,8 +25,8 @@ public class ConvenienceStoreService {
     }
 
     private void checkoutProduct(Order order, OrderProduct orderProduct) {
-        Product product = convenienceStore.findProduct(orderProduct);
-        Product promotionProduct = convenienceStore.findPromotionProduct(orderProduct);
+        CommonProduct product = convenienceStore.findProduct(orderProduct);
+        PromotionProduct promotionProduct = convenienceStore.findPromotionProduct(orderProduct);
 
         if (promotionAvailable(promotionProduct, order.getOrderDate())) {
             onlyPromotionProduct(order, orderProduct, promotionProduct);
@@ -35,32 +37,32 @@ public class ConvenienceStoreService {
         }
     }
 
-    private void onlyCommonProduct(Order order, OrderProduct orderProduct, Product product) {
-        int orderQuantity = orderProduct.getQuantity();
-        order.addPurchasedProducts(product, orderQuantity);
+    private boolean promotionAvailable(PromotionProduct product, LocalDate date) {
+        return product != null && product.checkIfPromotionAvailable(date);
     }
 
-    private void commonAndPromotionProduct(Order order, OrderProduct orderProduct, Product product, Product promotionProduct) {
+    private void onlyPromotionProduct(Order order, OrderProduct orderProduct, PromotionProduct promotionProduct) {
+        int promotionQuantity = promotionProduct.getQuantity();
+        int orderQuantity = orderProduct.getQuantity();
+
+        if (promotionQuantity >= orderQuantity) {
+            order.addPurchasedProducts(promotionProduct, orderQuantity);
+        }
+    }
+
+    private void commonAndPromotionProduct(Order order, OrderProduct orderProduct, CommonProduct product, PromotionProduct promotionProduct) {
         int promotionProductQuantity = promotionProduct.getQuantity(); // 프로모션 상품 갯수
         int orderQuantity = orderProduct.getQuantity();
 
         if (promotionProductQuantity < orderQuantity) {
-            order.addPurchasedPromotionProducts(promotionProduct, promotionProductQuantity);
+            order.addPurchasedProducts(promotionProduct, promotionProductQuantity);
             orderQuantity -= promotionProductQuantity;
             order.addPurchasedProducts(product, orderQuantity);
         }
     }
 
-    private void onlyPromotionProduct(Order order, OrderProduct orderProduct, Product promotionProduct) {
-        int promotionQuantity = promotionProduct.getQuantity();
+    private void onlyCommonProduct(Order order, OrderProduct orderProduct, Product product) {
         int orderQuantity = orderProduct.getQuantity();
-
-        if (promotionQuantity >= orderQuantity) {
-            order.addPurchasedPromotionProducts(promotionProduct, orderQuantity);
-        }
-    }
-
-    private boolean promotionAvailable(Product product, LocalDate date) {
-        return product != null && product.checkIfPromotionAvailable(date);
+        order.addPurchasedProducts(product, orderQuantity);
     }
 }

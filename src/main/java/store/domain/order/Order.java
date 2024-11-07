@@ -10,22 +10,16 @@ import store.domain.product.PromotionProduct;
 
 public class Order {
 
-    private final OrderProducts orderProducts;
     private final Products purchasedProducts;
     private final LocalDate orderDate;
 
-    private Order(OrderProducts orderProducts) {
-        this.orderProducts = orderProducts;
-        this.purchasedProducts = new Products(new ArrayList<>());
+    private Order(Products orderProducts) {
+        this.purchasedProducts = orderProducts;
         this.orderDate = LocalDate.from(DateTimes.now());
     }
 
-    public static Order createOrder(OrderProducts orderProducts) {
+    public static Order createOrder(Products orderProducts) {
         return new Order(orderProducts);
-    }
-
-    public OrderProducts getOrderProducts() {
-        return orderProducts;
     }
 
     public LocalDate getOrderDate() {

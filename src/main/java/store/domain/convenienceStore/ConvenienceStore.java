@@ -2,13 +2,10 @@ package store.domain.convenienceStore;
 
 import camp.nextstep.edu.missionutils.DateTimes;
 import store.domain.product.*;
-import store.domain.order.OrderProduct;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ConvenienceStore {
     private final Products products;
@@ -20,10 +17,6 @@ public class ConvenienceStore {
     @Override
     public String toString() {
         return products.toString();
-    }
-
-    public PromotionProduct findPromotionProduct(OrderProduct orderProduct) {
-        return products.findPromotionProductByName(orderProduct.getName());
     }
 
     public Products findProduct(String productName, int quantity) {

@@ -34,4 +34,8 @@ public class Promotion {
         if (orderProductQuantity % (buy+get) == buy) return get;
         return 0;
     }
+
+    public int getUnavailablePromotionQuantity(int orderProductQuantity) {
+        return orderProductQuantity - orderProductQuantity/(buy+get) * (buy+get);
+    }
 }

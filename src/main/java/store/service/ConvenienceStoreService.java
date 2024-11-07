@@ -5,6 +5,7 @@ import java.util.*;
 
 import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.order.Choice;
+import store.domain.product.CommonProduct;
 import store.domain.product.Products;
 import store.domain.product.PromotionProduct;
 
@@ -58,12 +59,32 @@ public class ConvenienceStoreService {
 
     public void addPromotionProductToCheckout(Choice choice, Products checkoutProducts, String product, int value) {
         if (choice.equals(Choice.NO)) return;
-        PromotionProduct promotionProduct = checkoutProducts.findPromotionProductByName(
-            product);
-        PromotionProduct conveniencePromotionProduct = convenienceStore.findPromotionProductByName(
-            product);
+        PromotionProduct promotionProduct = checkoutProducts.findPromotionProductByName(product);
+        PromotionProduct conveniencePromotionProduct = convenienceStore.findPromotionProductByName(product);
 
         conveniencePromotionProduct.removeQuantity(value);
         promotionProduct.addQuantity(value);
     }
+
+    public Map<String, Integer> unavailablePromotionProducts(Products checkoutProducts) {
+        Map<String, Integer> unavailablePromotionProducts = new LinkedHashMap<>();
+
+        for (PromotionProduct promotionProduct : filterPromotionProducts(checkoutProducts)) {
+            addUnavailablePromotionProduct(unavailablePromotionProducts, checkoutProducts, promotionProduct);
+        }
+
+        return unavailablePromotionProducts;
+    }
+
+    private void addUnavailablePromotionProduct(Map<String, Integer> unavailablePromotionProducts, Products checkoutProducts,
+        PromotionProduct promotionProduct) {
+        CommonProduct commonProduct = checkoutProducts.findCommonProductByName(promotionProduct.getName());
+        if (commonProduct == null) return;
+        int unavailablePromotionQuantity = promotionProduct.getUnavailablePromotionQuantity();
+        unavailablePromotionQuantity += commonProduct.getQuantity();
+
+        unavailablePromotionProducts.put(promotionProduct.getName(), unavailablePromotionQuantity);
+    }
+
+
 }

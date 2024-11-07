@@ -30,6 +30,8 @@ public class ConvenienceStoreController {
         availablePromotionProducts.forEach((product, value) -> {
             convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product, value);
         });
+        Map<String, Integer> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(checkoutProducts);
+
         System.out.println(availablePromotionProducts);
         System.out.println(convenienceStore);
     }

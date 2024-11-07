@@ -33,7 +33,7 @@ public class Products {
         return (PromotionProduct) products.stream().filter(p -> p.equals(productName) && p instanceof PromotionProduct).findFirst().orElse(null);
     }
 
-    public CommonProduct findProductByName(String productName) {
+    public CommonProduct findCommonProductByName(String productName) {
         return (CommonProduct) products.stream().filter(p -> p.equals(productName) && p instanceof CommonProduct).findFirst().orElse(null);
     }
 

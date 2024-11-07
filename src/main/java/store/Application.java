@@ -10,7 +10,7 @@ import store.service.ConvenienceStoreService;
 
 public class Application {
     public static void main(String[] args) {
-        ConvenienceStore convenienceStore = new ConvenienceStore(new ConvenienceStoreInitializeByFile());
+        ConvenienceStore convenienceStore = new ConvenienceStore(new ConvenienceStoreInitializeByFile().products());
         ConvenienceStoreService convenienceStoreService = new ConvenienceStoreService(
             convenienceStore);
 

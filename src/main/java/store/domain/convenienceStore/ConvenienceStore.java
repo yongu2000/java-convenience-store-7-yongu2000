@@ -11,12 +11,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ConvenienceStore {
-    private final Promotions promotions;
     private final Products products;
 
-    public ConvenienceStore(ConvenienceStoreInitialize convenienceStoreInitialize) {
-        this.promotions = convenienceStoreInitialize.promotions();
-        this.products = convenienceStoreInitialize.products();
+    public ConvenienceStore(Products products) {
+        this.products = products;
     }
 
     @Override

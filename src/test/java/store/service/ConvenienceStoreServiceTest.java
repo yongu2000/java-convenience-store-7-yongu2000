@@ -15,14 +15,17 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 
 class ConvenienceStoreServiceTest {
 
     private ConvenienceStore convenienceStore;
+    private List<Product> productList;
+    Products products;
 
     @BeforeEach
     void init() {
-        List<Product> productList = new ArrayList<>();
+        productList = new ArrayList<>();
         Promotion promotion = Promotion.of("탄산2+1",
                 2,
                 1,
@@ -37,7 +40,7 @@ class ConvenienceStoreServiceTest {
         productList.add(commonProduct2);
 
 
-        Products products = new Products(productList);
+        products = new Products(productList);
 
         convenienceStore = new ConvenienceStore(products);
     }
@@ -97,6 +100,59 @@ class ConvenienceStoreServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
 
+    }
+
+    @DisplayName("프로모션 적용 가능한 상품 목록 생성")
+    @Test
+    void 프로모션_상품_적용_가능한_상품_목룍() {
+        Promotion promotion = Promotion.of("탄산2+1",
+            2,
+            1,
+            LocalDate.of(2024, 1, 1),
+            LocalDate.of(2024, 12, 31));
+        Product promotionProduct = new PromotionProduct("사이다", 1000, 10, promotion);
+
+        productList.add(promotionProduct);
+        products = new Products(productList);
+
+        convenienceStore = new ConvenienceStore(products);
+        ConvenienceStoreService convenienceStoreService = new ConvenienceStoreService(convenienceStore);
+
+        Map<String, Integer> orderProducts = new LinkedHashMap<>();
+        orderProducts.put("콜라", 2);
+        orderProducts.put("사이다", 5);
+
+        Products checkout = convenienceStoreService.checkout(orderProducts);
+        Map<String, Integer> stringIntegerMap = convenienceStoreService.availablePromotionProducts(
+            convenienceStore, checkout);
+        assertThat(stringIntegerMap).hasSize(2)
+            .contains(entry("콜라", 1), entry("사이다", 1));
+    }
+
+    @DisplayName("프로모션 재고 없는 상품은 목록에 미포함")
+    @Test
+    void 프로모션_재고_없는_상품_목룍_미포함() {
+        Promotion promotion = Promotion.of("탄산2+1",
+            2,
+            1,
+            LocalDate.of(2024, 1, 1),
+            LocalDate.of(2024, 12, 31));
+        Product promotionProduct = new PromotionProduct("사이다", 1000, 5, promotion);
+
+        productList.add(promotionProduct);
+        products = new Products(productList);
+
+        convenienceStore = new ConvenienceStore(products);
+        ConvenienceStoreService convenienceStoreService = new ConvenienceStoreService(convenienceStore);
+
+        Map<String, Integer> orderProducts = new LinkedHashMap<>();
+        orderProducts.put("콜라", 11);
+        orderProducts.put("사이다", 5);
+
+        Products checkout = convenienceStoreService.checkout(orderProducts);
+        Map<String, Integer> stringIntegerMap = convenienceStoreService.availablePromotionProducts(
+            convenienceStore, checkout);
+        assertThat(stringIntegerMap).hasSize(0);
     }
 
 }

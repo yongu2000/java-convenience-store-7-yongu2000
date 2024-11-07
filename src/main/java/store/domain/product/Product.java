@@ -38,7 +38,7 @@ public abstract class Product {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, price, quantity);
+        return Objects.hash(name);
     }
 
     public boolean equals(String productName) {

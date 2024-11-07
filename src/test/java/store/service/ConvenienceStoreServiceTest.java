@@ -168,4 +168,28 @@ class ConvenienceStoreServiceTest {
             .contains(entry("콜라", 4), entry("사이다", 6));
     }
 
+    @DisplayName("프로모션 적용 불가능한 상품 제거하기")
+    @Test
+    void 프로모션_적용_불가능한_상품_제거() {
+        Map<String, Integer> orderProducts = new LinkedHashMap<>();
+        orderProducts.put("콜라", 13);
+        orderProducts.put("사이다", 15);
+        orderProducts.put("오렌지주스", 4);
+
+        Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
+        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
+        availablePromotionProducts.forEach((product, value) -> {
+            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product, value);
+        });
+        Map<String, Integer> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(checkoutProducts);
+        unavailablePromotionProducts.forEach((product, value) -> {
+            convenienceStoreService.removeProductsFromCheckout(Choice.YES, checkoutProducts, product);
+        });
+
+        assertThat(convenienceStore.toString())
+            .isEqualToIgnoringWhitespace("- 콜라 1000원 1 탄산2+1 - 콜라 1000원 10 - 사이다 1000원 1 탄산2+1 - 사이다 1000원 10 - 오렌지주스 1800원 5 MD추천상품 - 에너지바 2000원 5");
+        assertThat(checkoutProducts.toString())
+            .isEqualToIgnoringWhitespace("- 콜라 1000원 9 탄산2+1 - 사이다 1000원 9 탄산2+1 - 오렌지주스 1800원 4 MD추천상품");
+    }
+
 }

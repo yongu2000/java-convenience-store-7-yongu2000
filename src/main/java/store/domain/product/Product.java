@@ -1,5 +1,7 @@
 package store.domain.product;
 
+import java.util.Objects;
+
 public abstract class Product {
 
     protected final String name;
@@ -19,6 +21,24 @@ public abstract class Product {
 
     public String getName(){
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || (o.getClass() != CommonProduct.class && o.getClass() != PromotionProduct.class)) {
+            return false;
+        }
+        Product product = (Product) o;
+        if (getClass() == o.getClass() && Objects.equals(name, product.name)) return true;
+        return Objects.equals(name, product.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, price, quantity);
     }
 
     public boolean equals(String productName) {

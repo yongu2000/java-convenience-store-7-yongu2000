@@ -37,6 +37,10 @@ public class Products {
         return (CommonProduct) products.stream().filter(p -> p.equals(productName) && p instanceof CommonProduct).findFirst().orElse(null);
     }
 
+    public void remove(Product product) {
+        products.remove(product);
+    }
+
     public Stream<Product> stream() {
         return products.stream();
     }

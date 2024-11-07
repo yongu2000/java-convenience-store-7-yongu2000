@@ -86,5 +86,28 @@ public class ConvenienceStoreService {
         unavailablePromotionProducts.put(promotionProduct.getName(), unavailablePromotionQuantity);
     }
 
+    public void removeProductsFromCheckout(Choice choice, Products checkoutProducts, String product) {
+        if (choice.equals(Choice.NO)) return;
+        removePromotionProductFromCheckout(checkoutProducts, product);
+        removeCommonProductFromCheckout(checkoutProducts, product);
+    }
+
+    private void removePromotionProductFromCheckout(Products checkoutProducts, String product) {
+        PromotionProduct checkoutPromotionProduct = checkoutProducts.findPromotionProductByName(product);
+        PromotionProduct conveniencePromotionProduct = convenienceStore.findPromotionProductByName(product);
+        int unavailablePromotionQuantity = checkoutPromotionProduct.getUnavailablePromotionQuantity();
+
+        checkoutPromotionProduct.removeQuantity(unavailablePromotionQuantity);
+        conveniencePromotionProduct.addQuantity(unavailablePromotionQuantity);
+    }
+
+    private void removeCommonProductFromCheckout(Products checkoutProducts, String product) {
+        CommonProduct checkoutCommonProduct = checkoutProducts.findCommonProductByName(product);
+        CommonProduct convenienceCommonProduct = convenienceStore.findCommonProductByName(product);
+
+        checkoutProducts.remove(checkoutCommonProduct);
+        convenienceCommonProduct.addQuantity(checkoutCommonProduct.getQuantity());
+    }
+
 
 }

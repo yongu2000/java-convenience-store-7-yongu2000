@@ -1,6 +1,5 @@
 package store.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -180,7 +179,7 @@ class ConvenienceStoreServiceTest {
         Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(
             convenienceStore, checkoutProducts);
         availablePromotionProducts.forEach((product, value) -> {
-            convenienceStoreService.addPromotionProduct(Choice.YES, checkoutProducts, product, value);
+            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product, value);
         });
         assertThat(convenienceStore.toString())
             .isEqualToIgnoringWhitespace("- 콜라 1000원 7 탄산2+1 - 콜라 1000원 10 - 에너지바 2000원 5 - 사이다 1000원 7 탄산2+1");

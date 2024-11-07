@@ -1,7 +1,6 @@
 package store.controller;
 
 import store.domain.convenienceStore.ConvenienceStore;
-import store.domain.convenienceStore.ConvenienceStoreInitializeByFile;
 import store.domain.order.Choice;
 import store.domain.order.parser.StringToMapParser;
 import store.domain.product.Products;
@@ -29,7 +28,7 @@ public class ConvenienceStoreController {
         Products checkoutProducts = convenienceStoreService.checkout(stringToMapParser.parse("[콜라-2]"));
         Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(convenienceStore, checkoutProducts);
         availablePromotionProducts.forEach((product, value) -> {
-            convenienceStoreService.addPromotionProduct(Choice.YES, checkoutProducts, product, value);
+            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product, value);
         });
         System.out.println(availablePromotionProducts);
         System.out.println(convenienceStore);

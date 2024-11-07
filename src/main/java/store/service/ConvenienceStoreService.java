@@ -30,11 +30,11 @@ public class ConvenienceStoreService {
         products.add(convenienceStore.findProduct(productName, quantity));
     }
 
-    public Map<String, Integer> availablePromotionProducts(ConvenienceStore convenienceStore, Products checkoutProducts) {
+    public Map<String, Integer> availablePromotionProducts(Products checkoutProducts) {
         Map<String, Integer> availablePromotionProducts = new LinkedHashMap<>();
 
         for (PromotionProduct promotionProduct : filterPromotionProducts(checkoutProducts)) {
-            addAvailablePromotionProduct(convenienceStore, availablePromotionProducts, promotionProduct);
+            addAvailablePromotionProduct(availablePromotionProducts, promotionProduct);
         }
 
         return availablePromotionProducts;
@@ -47,7 +47,7 @@ public class ConvenienceStoreService {
             .toList();
     }
 
-    private void addAvailablePromotionProduct(ConvenienceStore convenienceStore, Map<String, Integer> availablePromotionProducts, PromotionProduct promotionProduct) {
+    private void addAvailablePromotionProduct(Map<String, Integer> availablePromotionProducts, PromotionProduct promotionProduct) {
         int availablePromotionQuantity = promotionProduct.getAvailablePromotionQuantity();
         PromotionProduct storeProduct = convenienceStore.findPromotionProductByName(promotionProduct.getName());
 

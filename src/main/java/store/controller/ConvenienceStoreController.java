@@ -26,7 +26,7 @@ public class ConvenienceStoreController {
         StringToMapParser stringToMapParser = new StringToMapParser();
 
         Products checkoutProducts = convenienceStoreService.checkout(stringToMapParser.parse("[콜라-2]"));
-        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(convenienceStore, checkoutProducts);
+        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
         availablePromotionProducts.forEach((product, value) -> {
             convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product, value);
         });

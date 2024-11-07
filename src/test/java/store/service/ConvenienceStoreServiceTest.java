@@ -123,8 +123,7 @@ class ConvenienceStoreServiceTest {
         orderProducts.put("사이다", 5);
 
         Products checkout = convenienceStoreService.checkout(orderProducts);
-        Map<String, Integer> stringIntegerMap = convenienceStoreService.availablePromotionProducts(
-            convenienceStore, checkout);
+        Map<String, Integer> stringIntegerMap = convenienceStoreService.availablePromotionProducts(checkout);
         assertThat(stringIntegerMap).hasSize(2)
             .contains(entry("콜라", 1), entry("사이다", 1));
     }
@@ -150,8 +149,7 @@ class ConvenienceStoreServiceTest {
         orderProducts.put("사이다", 5);
 
         Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
-        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(
-            convenienceStore, checkoutProducts);
+        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
         assertThat(availablePromotionProducts).hasSize(0);
     }
 
@@ -176,8 +174,7 @@ class ConvenienceStoreServiceTest {
         orderProducts.put("사이다", 2);
 
         Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
-        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(
-            convenienceStore, checkoutProducts);
+        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
         availablePromotionProducts.forEach((product, value) -> {
             convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product, value);
         });

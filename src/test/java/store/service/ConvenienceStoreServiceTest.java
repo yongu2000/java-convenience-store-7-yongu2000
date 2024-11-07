@@ -114,8 +114,8 @@ class ConvenienceStoreServiceTest {
         orderProducts.put("콜라", 2);
         orderProducts.put("사이다", 5);
 
-        Products checkout = convenienceStoreService.checkout(orderProducts);
-        Map<String, Integer> stringIntegerMap = convenienceStoreService.availablePromotionProducts(checkout);
+        Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
+        Map<String, Integer> stringIntegerMap = convenienceStoreService.availablePromotionProducts(checkoutProducts);
         assertThat(stringIntegerMap).hasSize(2)
             .contains(entry("콜라", 1), entry("사이다", 1));
     }
@@ -148,6 +148,24 @@ class ConvenienceStoreServiceTest {
             .isEqualToIgnoringWhitespace("- 콜라 1000원 7 탄산2+1 - 콜라 1000원 10 - 사이다 1000원 7 탄산2+1 - 사이다 1000원 10 - 오렌지주스 1800원 9 MD추천상품 - 에너지바 2000원 5");
         assertThat(checkoutProducts.toString())
             .isEqualToIgnoringWhitespace("- 콜라 1000원 3 탄산2+1 - 사이다 1000원 3 탄산2+1");
+    }
+
+    @DisplayName("프로모션 적용이 안되는 상품 목록 생성")
+    @Test
+    void 프로모션_상품_적용_불가능한_상품_목룍() {
+        Map<String, Integer> orderProducts = new LinkedHashMap<>();
+        orderProducts.put("콜라", 13);
+        orderProducts.put("사이다", 15);
+        orderProducts.put("오렌지주스", 4);
+
+        Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
+        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
+        availablePromotionProducts.forEach((product, value) -> {
+            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product, value);
+        });
+        Map<String, Integer> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(checkoutProducts);
+        assertThat(unavailablePromotionProducts).hasSize(2)
+            .contains(entry("콜라", 4), entry("사이다", 6));
     }
 
 }

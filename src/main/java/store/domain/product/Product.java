@@ -32,13 +32,12 @@ public abstract class Product {
             return false;
         }
         Product product = (Product) o;
-        if (getClass() == o.getClass() && Objects.equals(name, product.name)) return true;
         return Objects.equals(name, product.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(name, price, quantity);
     }
 
     public boolean equals(String productName) {

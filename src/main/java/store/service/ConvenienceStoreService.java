@@ -95,18 +95,18 @@ public class ConvenienceStoreService {
     private void removePromotionProductFromCheckout(Products checkoutProducts, String product) {
         PromotionProduct checkoutPromotionProduct = checkoutProducts.findPromotionProductByName(product);
         PromotionProduct conveniencePromotionProduct = convenienceStore.findPromotionProductByName(product);
-        int unavailablePromotionQuantity = checkoutPromotionProduct.getUnavailablePromotionQuantity();
-
-        checkoutPromotionProduct.removeQuantity(unavailablePromotionQuantity);
-        conveniencePromotionProduct.addQuantity(unavailablePromotionQuantity);
+        int unavailableCheckoutPromotionProductQuantity = checkoutPromotionProduct.getUnavailablePromotionQuantity();
+        checkoutPromotionProduct.removeQuantity(unavailableCheckoutPromotionProductQuantity);
+        conveniencePromotionProduct.addQuantity(unavailableCheckoutPromotionProductQuantity);
     }
 
     private void removeCommonProductFromCheckout(Products checkoutProducts, String product) {
         CommonProduct checkoutCommonProduct = checkoutProducts.findCommonProductByName(product);
         CommonProduct convenienceCommonProduct = convenienceStore.findCommonProductByName(product);
+        int unavailableCheckoutCommonProductQuantity = checkoutCommonProduct.getQuantity();
+        checkoutProducts.removeCommonProduct(checkoutCommonProduct);
+        convenienceCommonProduct.addQuantity(unavailableCheckoutCommonProductQuantity);
 
-        checkoutProducts.remove(checkoutCommonProduct);
-        convenienceCommonProduct.addQuantity(checkoutCommonProduct.getQuantity());
     }
 
 

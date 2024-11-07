@@ -52,7 +52,14 @@ public class ConvenienceStoreService {
         return availablePromotionProducts;
     }
 
-    public void addPromotionProduct(Choice choice, Products checkoutProducts, String product, Integer value) {
+    public void addPromotionProduct(Choice choice, Products checkoutProducts, String product, int value) {
+        if (choice.equals(Choice.NO)) return;
+        PromotionProduct promotionProduct = checkoutProducts.findPromotionProductByName(
+            product);
+        PromotionProduct conveniencePromotionProduct = convenienceStore.findPromotionProductByName(
+            product);
 
+        conveniencePromotionProduct.removeQuantity(value);
+        promotionProduct.addQuantity(value);
     }
 }

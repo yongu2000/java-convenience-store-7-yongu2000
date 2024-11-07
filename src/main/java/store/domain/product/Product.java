@@ -36,4 +36,8 @@ public abstract class Product {
     public void setQuantity(int value) {
         quantity = value;
     }
+
+    public void addQuantity(int value) {
+        quantity += value;
+    };
 }

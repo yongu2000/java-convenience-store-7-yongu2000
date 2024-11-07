@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.domain.convenienceStore.ConvenienceStore;
+import store.domain.order.Choice;
 import store.domain.product.*;
 
 import java.time.LocalDate;
@@ -149,10 +150,45 @@ class ConvenienceStoreServiceTest {
         orderProducts.put("콜라", 11);
         orderProducts.put("사이다", 5);
 
-        Products checkout = convenienceStoreService.checkout(orderProducts);
-        Map<String, Integer> stringIntegerMap = convenienceStoreService.availablePromotionProducts(
-            convenienceStore, checkout);
-        assertThat(stringIntegerMap).hasSize(0);
+        Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
+        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(
+            convenienceStore, checkoutProducts);
+        assertThat(availablePromotionProducts).hasSize(0);
+    }
+
+    @DisplayName("프로모션 적용 가능한 상품 추가하기")
+    @Test
+    void 프로모션_적용_가능한_상품_추가() {
+        Promotion promotion = Promotion.of("탄산2+1",
+            2,
+            1,
+            LocalDate.of(2024, 1, 1),
+            LocalDate.of(2024, 12, 31));
+        Product promotionProduct = new PromotionProduct("사이다", 1000, 10, promotion);
+
+        productList.add(promotionProduct);
+        products = new Products(productList);
+
+        convenienceStore = new ConvenienceStore(products);
+        ConvenienceStoreService convenienceStoreService = new ConvenienceStoreService(convenienceStore);
+
+        Map<String, Integer> orderProducts = new LinkedHashMap<>();
+        orderProducts.put("콜라", 2);
+        orderProducts.put("사이다", 2);
+
+        Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
+        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(
+            convenienceStore, checkoutProducts);
+        availablePromotionProducts.forEach((product, value) -> {
+            convenienceStoreService.addPromotionProduct(Choice.YES, checkoutProducts, product, value);
+        });
+        assertThat(convenienceStore.toString())
+            .isEqualToIgnoringWhitespace("- 콜라 1000원 7 탄산2+1 - 콜라 1000원 10 - 에너지바 2000원 5 - 사이다 1000원 7 탄산2+1");
+        assertThat(checkoutProducts.toString())
+            .isEqualToIgnoringWhitespace("- 콜라 1000원 3 탄산2+1 - 사이다 1000원 3 탄산2+1");
+
+
+        System.out.println(checkoutProducts);
     }
 
 }

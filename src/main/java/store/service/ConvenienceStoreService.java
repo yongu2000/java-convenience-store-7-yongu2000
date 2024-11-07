@@ -42,9 +42,9 @@ public class ConvenienceStoreService {
 
         for (PromotionProduct promotionProduct : promotionProducts) {
             int availablePromotionQuantity = promotionProduct.getAvailablePromotionQuantity();
-            PromotionProduct productByName = convenienceStore.findPromotionProductByName(promotionProduct.getName());
+            PromotionProduct storeProduct = convenienceStore.findPromotionProductByName(promotionProduct.getName());
 
-            if (productByName != null && productByName.getQuantity() >= availablePromotionQuantity) {
+            if (storeProduct != null && storeProduct.getQuantity() > 0 && storeProduct.getQuantity() >= availablePromotionQuantity) {
                 availablePromotionProducts.put(promotionProduct.getName(), availablePromotionQuantity);
             }
         }

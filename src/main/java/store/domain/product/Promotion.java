@@ -31,6 +31,7 @@ public class Promotion {
     }
 
     public int getPromotionQuantity(int orderProductQuantity) {
-        return orderProductQuantity / (buy + get);
+        if (orderProductQuantity % (buy+get) == buy) return get;
+        return 0;
     }
 }

@@ -22,39 +22,57 @@ public class ConvenienceStore {
     public Products findProduct(String productName, int quantity) {
         checkProductExistence(productName);
         checkProductQuantity(productName, quantity);
-        return takeProduct(productName, quantity);
+        return takeProducts(productName, quantity);
     }
 
-    private Products takeProduct(String productName, int quantity) {
+    private Products takeProducts(String productName, int quantity) {
         Products takenProducts = new Products(new ArrayList<>());
-
         int remainingQuantity = quantity;
 
-        Iterator<Product> productIterator = products.stream()
-                .filter(product -> product.equals(productName))
-                .iterator();
-
-        while (productIterator.hasNext() && remainingQuantity > 0) {
-            Product product = productIterator.next();
-            int takeQuantity = Math.min(product.getQuantity(), remainingQuantity);
-
-            if (product instanceof PromotionProduct &&
-                    promotionAvailable((PromotionProduct) product,
-                            LocalDate.from(DateTimes.now()))) {
-                Product takenProduct = new PromotionProduct((PromotionProduct) product, takeQuantity);
-                takenProducts.add(takenProduct);
-
-                remainingQuantity -= takeQuantity;
-            }
-            if (product instanceof CommonProduct) {
-                Product takenProduct = new CommonProduct((CommonProduct) product, takeQuantity);
-                takenProducts.add(takenProduct);
-
-                remainingQuantity -= takeQuantity;
-            }
+        Iterator<Product> products = findProductByName(productName);
+        while (products.hasNext() && remainingQuantity > 0) {
+            remainingQuantity = processProduct(products.next(), takenProducts, remainingQuantity);
         }
         return takenProducts;
     }
+
+    public Iterator<Product> findProductByName(String productName) {
+        return products.stream()
+                .filter(product -> product.equals(productName))
+                .iterator();
+    }
+
+    public PromotionProduct findPromotionProductByName(String productName) {
+        return (PromotionProduct) products.stream()
+                .filter(product -> product.equals(productName) && product instanceof PromotionProduct)
+                .findFirst().orElse(null);
+    }
+
+    public CommonProduct findCommonProductByName(String productName) {
+        return (CommonProduct) products.stream()
+                .filter(product -> product.equals(productName) && product instanceof CommonProduct)
+                .findFirst().orElse(null);
+    }
+
+    private int processProduct(Product product, Products takenProducts, int remainingQuantity) {
+        int takeQuantity = Math.min(product.getQuantity(), remainingQuantity);
+        Product takenProduct = createProductsWithQuantity(product, takeQuantity);
+
+        takenProducts.add(takenProduct);
+        return remainingQuantity - takeQuantity;
+    }
+
+    private Product createProductsWithQuantity(Product product, int quantity) {
+        if (product instanceof PromotionProduct &&
+                promotionAvailable((PromotionProduct) product, LocalDate.from(DateTimes.now()))) {
+            return new PromotionProduct((PromotionProduct) product, quantity);
+        }
+        if (product instanceof CommonProduct) {
+            return new CommonProduct((CommonProduct) product, quantity);
+        }
+        throw new IllegalArgumentException("[ERROR] 알 수 없는 제품 유형입니다.");
+    }
+
 
     private void checkProductExistence(String productName) {
         boolean exists = products.stream().anyMatch(product -> product.equals(productName));

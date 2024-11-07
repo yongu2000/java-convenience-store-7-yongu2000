@@ -30,4 +30,7 @@ public class PromotionProduct extends Product{
     }
 
 
+    public int getAvailablePromotionQuantity() {
+        return promotion.getPromotionQuantity(quantity);
+    }
 }

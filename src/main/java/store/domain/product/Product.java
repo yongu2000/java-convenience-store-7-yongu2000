@@ -17,6 +17,10 @@ public abstract class Product {
         return String.format("- %s %d원 %s", name, price, quantity).trim();
     }
 
+    public String getName(){
+        return name;
+    }
+
     public boolean equals(String productName) {
         return productName.equals(name);
     }

@@ -24,12 +24,9 @@ public class Order {
         return new Order(orderProducts, membershipDiscount);
     }
 
-    public LocalDate getOrderDate() {
-        return orderDate;
-    }
-
-    public void addPurchasedProducts(Product product, int orderQuantity) {
-        if (product instanceof CommonProduct) purchasedProducts.add(new CommonProduct((CommonProduct) product, orderQuantity));
-        if (product instanceof PromotionProduct) purchasedProducts.add(new PromotionProduct((PromotionProduct) product, orderQuantity));
+    public int getTotalPrice() {
+        return purchasedProducts.stream()
+                .mapToInt(Product::getQuantity)
+                .sum();
     }
 }

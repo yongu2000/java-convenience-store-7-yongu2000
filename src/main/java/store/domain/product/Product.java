@@ -60,5 +60,7 @@ public abstract class Product {
         quantity += value;
     };
 
-
+    public int getTotalPrice() {
+        return price * quantity;
+    }
 }

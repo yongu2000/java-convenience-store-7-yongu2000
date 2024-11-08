@@ -1,0 +1,55 @@
+package store.domain.order;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import store.domain.convenienceStore.ConvenienceStore;
+import store.domain.product.*;
+import store.service.ConvenienceStoreService;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class OrderTest {
+
+    Products products;
+
+    @BeforeEach
+    void init() {
+        List<Product> productList = new ArrayList<>();
+        Promotion promotion = Promotion.of("탄산2+1",
+                2,
+                1,
+                LocalDate.of(2024, 1, 1),
+                LocalDate.of(2024, 12, 31));
+        Promotion promotion2 = Promotion.of("MD추천상품",
+                1,
+                1,
+                LocalDate.of(2024, 1, 1),
+                LocalDate.of(2024, 12, 31));
+        Product promotionProduct = new PromotionProduct("콜라", 1000, 10, promotion);
+        Product promotionProduct2 = new PromotionProduct("사이다", 1000, 3, promotion);
+        Product promotionProduct3 = new PromotionProduct("오렌지주스", 1800, 2, promotion2);
+        Product commonProduct = new CommonProduct("콜라", 1000, 3);
+        Product commonProduct2 = new CommonProduct("에너지바", 2000, 1);
+
+        productList.add(promotionProduct);
+        productList.add(commonProduct);
+        productList.add(promotionProduct2);
+        productList.add(promotionProduct3);
+        productList.add(commonProduct2);
+
+        products = new Products(productList);
+    }
+
+    @DisplayName("Y 입력시 Choice.YES 반환")
+    @Test
+    void 구매한_상품의_총_금액() {
+        Order order = Order.createOrder(products, Choice.YES);
+        order.getTotalPrice();
+    }
+
+}

@@ -2,6 +2,8 @@ package store.domain.order;
 
 import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import store.domain.product.CommonProduct;
 import store.domain.product.Product;
@@ -24,9 +26,11 @@ public class Order {
         return new Order(orderProducts, membershipDiscount);
     }
 
-    public int getTotalPrice() {
-        return purchasedProducts.stream()
-                .mapToInt(Product::getQuantity)
-                .sum();
+    public TotalPrice getTotalPrice() {
+        Map<String, Integer> totalPrice = new LinkedHashMap<>();
+        purchasedProducts.stream().forEach(product ->
+                totalPrice.merge(product.getName(), product.getQuantity(), Integer::sum)
+        );
+        return new TotalPrice(totalPrice);
     }
 }

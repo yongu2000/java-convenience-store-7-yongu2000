@@ -2,6 +2,7 @@ package store.controller;
 
 import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.order.Choice;
+import store.domain.order.Order;
 import store.domain.order.parser.StringToMapParser;
 import store.domain.product.Products;
 import store.service.ConvenienceStoreService;
@@ -38,6 +39,11 @@ public class ConvenienceStoreController {
             convenienceStoreService.removeProductsFromCheckout(Choice.YES, checkoutProducts, product);
         });
         System.out.println(unavailablePromotionProducts);
+
+        Choice membershipDiscount = Choice.ofString("Y");
+        Order order = Order.createOrder(checkoutProducts, membershipDiscount);
+
+
 
         System.out.println(convenienceStore);
     }

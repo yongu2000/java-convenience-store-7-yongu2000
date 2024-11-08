@@ -1,5 +1,7 @@
 package store.domain.order;
 
+import java.util.Arrays;
+
 public enum Choice {
     YES("Y"),
     NO("N");
@@ -10,7 +12,10 @@ public enum Choice {
         this.value = value;
     }
 
-    public boolean equals(String input) {
-        return input.equals(value);
+    public static Choice ofString(String input) {
+        return Arrays.stream(Choice.values())
+                .filter(choice -> input.equals(choice.value))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요."));
     }
 }

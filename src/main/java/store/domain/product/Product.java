@@ -59,4 +59,6 @@ public abstract class Product {
     public void addQuantity(int value) {
         quantity += value;
     };
+
+
 }

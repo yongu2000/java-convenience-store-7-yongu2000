@@ -45,11 +45,16 @@ class OrderTest {
         products = new Products(productList);
     }
 
-    @DisplayName("Y 입력시 Choice.YES 반환")
+    @DisplayName("구매한 상품의 총 금액 반환")
     @Test
     void 구매한_상품의_총_금액() {
         Order order = Order.createOrder(products, Choice.YES);
-        order.getTotalPrice();
+        TotalPrice totalPrice = order.getTotalPrice();
+
+        assertThat(totalPrice.get("콜라")).isEqualTo(13000);
+        assertThat(totalPrice.get("사이다")).isEqualTo(3000);
+        assertThat(totalPrice.get("오렌지주스")).isEqualTo(3600);
+        assertThat(totalPrice.get("에너지바")).isEqualTo(2000);
     }
 
 }

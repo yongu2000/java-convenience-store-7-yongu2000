@@ -9,4 +9,7 @@ public class TotalPrice {
         this.totalPrice = totalPrice;
     }
 
+    public int get(String productName) {
+        return totalPrice.get(productName);
+    }
 }

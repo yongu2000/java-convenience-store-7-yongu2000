@@ -41,6 +41,7 @@ public class ConvenienceStoreService {
         return checkoutProducts.stream()
             .filter(PromotionProduct.class::isInstance)
             .map(PromotionProduct.class::cast)
+            .filter(PromotionProduct::promotionIsApplicable)
             .toList();
     }
 

@@ -53,6 +53,7 @@ public class Order {
         purchasedProducts.stream()
                 .filter(product -> product instanceof PromotionProduct)
                 .map(PromotionProduct.class::cast)
+                .filter(PromotionProduct::promotionIsApplicable)
                 .forEach(product -> products.add(new ReceiptProduct(product.getName(), product.getPrice() * product.getPromotionDiscountQuantity(), product.getPromotionDiscountQuantity())));
         return new Products(products);
     }

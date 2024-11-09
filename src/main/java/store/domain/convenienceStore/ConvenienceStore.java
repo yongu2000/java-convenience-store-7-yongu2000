@@ -61,8 +61,7 @@ public class ConvenienceStore {
     }
 
     private Product createProductsWithQuantity(Product product, int quantity) {
-        if (product instanceof PromotionProduct &&
-                promotionAvailable((PromotionProduct) product, LocalDate.from(DateTimes.now()))) {
+        if (product instanceof PromotionProduct) {
             return new PromotionProduct((PromotionProduct) product, quantity);
         }
         if (product instanceof CommonProduct) {
@@ -86,10 +85,6 @@ public class ConvenienceStore {
         if (totalQuantity < quantity) {
             throw new IllegalArgumentException("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
         }
-    }
-
-    private boolean promotionAvailable(PromotionProduct product, LocalDate date) {
-        return product.checkIfPromotionAvailable(date);
     }
 
     public MembershipDiscount getMembershipDiscount() {

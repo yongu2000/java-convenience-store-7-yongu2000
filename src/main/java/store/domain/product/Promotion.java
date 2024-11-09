@@ -1,5 +1,7 @@
 package store.domain.product;
 
+import camp.nextstep.edu.missionutils.DateTimes;
+
 import java.time.LocalDate;
 
 public class Promotion {
@@ -8,6 +10,7 @@ public class Promotion {
     private final int get;
     private final LocalDate startDate;
     private final LocalDate endDate;
+    private boolean applicable;
 
     private Promotion(String name, int buy, int get, LocalDate startDate, LocalDate endDate) {
         this.name = name;
@@ -15,6 +18,7 @@ public class Promotion {
         this.get = get;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.applicable = checkAvailable(DateTimes.now().toLocalDate());
     }
 
     public static Promotion of(String name, int buy, int get, LocalDate startDate, LocalDate endDate) {
@@ -41,5 +45,9 @@ public class Promotion {
 
     public int getAppliedPromotionQuantity(int quantity) {
         return quantity / (buy+get) * get;
+    }
+
+    public boolean isApplicable() {
+        return applicable;
     }
 }

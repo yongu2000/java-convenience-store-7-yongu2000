@@ -22,10 +22,6 @@ public class PromotionProduct extends Product{
         return String.format("- %s %,d원 재고없음 %s", name, price, promotion).trim();
     }
 
-    public boolean checkIfPromotionAvailable(LocalDate orderDate) {
-        return promotion.checkAvailable(orderDate);
-    }
-
     public int getAvailablePromotionQuantity() {
         return promotion.getAvailablePromotionQuantity(quantity);
     }
@@ -40,5 +36,9 @@ public class PromotionProduct extends Product{
 
     public int getPromotionDiscountQuantity() {
         return promotion.getAppliedPromotionQuantity(quantity);
+    }
+
+    public boolean promotionIsApplicable() {
+        return promotion.isApplicable();
     }
 }

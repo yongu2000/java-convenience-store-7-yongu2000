@@ -87,7 +87,7 @@ public class ConvenienceStoreService {
     }
 
     public void removeProductsFromCheckout(Choice choice, Products checkoutProducts, String product) {
-        if (choice.equals(Choice.NO)) return;
+        if (choice.equals(Choice.YES)) return;
         removePromotionProductFromCheckout(checkoutProducts, product);
         removeCommonProductFromCheckout(checkoutProducts, product);
     }

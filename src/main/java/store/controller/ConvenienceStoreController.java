@@ -6,55 +6,55 @@ import store.domain.order.Order;
 import store.domain.order.parser.StringToMapParser;
 import store.domain.product.Products;
 import store.domain.receipt.Receipt;
+import store.domain.receipt.ReceiptDto;
 import store.service.ConvenienceStoreService;
+import store.view.InputView;
+import store.view.OutputView;
 
 import java.util.Map;
 
 public class ConvenienceStoreController {
 
     private final ConvenienceStore convenienceStore;
+    private final ConvenienceStoreService convenienceStoreService;
+    private final InputView inputView;
+    private final OutputView outputView;
 
-    public ConvenienceStoreController(ConvenienceStore convenienceStore) {
+    public ConvenienceStoreController(ConvenienceStore convenienceStore, ConvenienceStoreService convenienceStoreService, InputView inputView, OutputView outputView) {
         this.convenienceStore = convenienceStore;
+        this.convenienceStoreService = convenienceStoreService;
+        this.inputView = inputView;
+        this.outputView = outputView;
     }
 
     public void run() {
-        ConvenienceStoreService convenienceStoreService = new ConvenienceStoreService(
-                convenienceStore);
-
-        System.out.println(convenienceStore);
-        System.out.println();
-
+        outputView.printStoreInformation(convenienceStore.toString());
         StringToMapParser stringToMapParser = new StringToMapParser();
-
-        Products checkoutProducts = convenienceStoreService.checkout(stringToMapParser.parse("[콜라-13]"));
+        Products checkoutProducts = convenienceStoreService.checkout(stringToMapParser.parse(inputView.readOrder()));
 
         Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
         availablePromotionProducts.forEach((product, value) -> {
-            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product, value);
+            convenienceStoreService.addPromotionProductToCheckout(inputView.readAddPromotionChoice(), checkoutProducts, product, value);
         });
-        System.out.println(availablePromotionProducts);
 
         Map<String, Integer> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(checkoutProducts);
         unavailablePromotionProducts.forEach((product, value) -> {
-            convenienceStoreService.removeProductsFromCheckout(Choice.NO, checkoutProducts, product);
+            convenienceStoreService.removeProductsFromCheckout(inputView.readRemovePromotionChoice(), checkoutProducts, product);
         });
-        System.out.println(unavailablePromotionProducts);
 
-        Choice membershipDiscount = Choice.ofString("Y");
+        Choice membershipDiscount = inputView.readMembershipDiscountChoice();
+
         Order order = Order.createOrder(checkoutProducts, membershipDiscount);
 
-        Products totalPrice = order.getReceiptTotal();
-        Products totalPromotionPrice = order.getReceiptPromotion();
-        int membershipDiscountPrice = order.getMembershipDiscountPrice(convenienceStore.getMembershipDiscount());
+        Receipt receipt = new Receipt(order.getReceiptTotal(),
+                order.getReceiptPromotion(),
+                order.getMembershipDiscountPrice(convenienceStore.getMembershipDiscount()));
 
-        Receipt receipt = new Receipt(totalPrice, totalPromotionPrice, membershipDiscountPrice);
+        ReceiptDto receiptDto = ReceiptDto.from(receipt);
 
-        System.out.println(receipt.getTotalPrice());
-        System.out.println(receipt.getPromotionDiscount());
-        System.out.println(receipt.getMembershipDiscount());
-        System.out.println(receipt.getCustomerPrice());
-        System.out.println(convenienceStore);
+        outputView.printReceipt(receiptDto);
+
+        inputView.readShopAgainChoice();
     }
 
 }

@@ -12,7 +12,7 @@ import store.view.InputView;
 import store.view.OutputView;
 
 import java.util.List;
-import java.util.Map;
+import java.util.function.Supplier;
 
 public class ConvenienceStoreController {
 
@@ -29,28 +29,65 @@ public class ConvenienceStoreController {
     }
 
     public void run() {
+        do {
+            order();
+        } while (Choice.NO != executeWithRetry(inputView::readShopAgainChoice));
+    }
+
+    public void order() {
         outputView.printStoreInformation(convenienceStore.toString());
-        Products checkoutProducts = convenienceStoreService.checkout(ProductDto.from(inputView.readOrder()));
+        productsToCounter();
+        promotionApplicable();
+        promotionNotApplicable();
+        Choice membershipDiscountStatus = membershipDiscountApply();
+        Order order = confirmOrder(membershipDiscountStatus);
+        convenienceStore.clearCounter();
+        receipt(order);
+    }
 
-        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
-        availablePromotionProducts.forEach(product -> convenienceStoreService.addPromotionProductToCheckout(inputView.readAddPromotionChoice(product), checkoutProducts, product.name(), product.quantity()));
+    public void productsToCounter() {
+        convenienceStoreService.checkout(ProductDto.from(executeWithRetry(inputView::readOrder)));
+    }
 
-        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(checkoutProducts);
-        unavailablePromotionProducts.forEach(product -> convenienceStoreService.removeProductsFromCheckout(inputView.readRemovePromotionChoice(product), checkoutProducts, product.name()));
+    public void promotionApplicable() {
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(convenienceStore.counter());
+        availablePromotionProducts.forEach(product -> convenienceStoreService.addPromotionProductToCheckout(executeWithRetry(() -> inputView.readAddPromotionChoice(product)),
+                convenienceStore.counter(),
+                product.name(),
+                product.quantity()));
+    }
 
-        Choice membershipDiscount = inputView.readMembershipDiscountChoice();
+    public void promotionNotApplicable() {
+        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(convenienceStore.counter());
+        unavailablePromotionProducts.forEach(product -> convenienceStoreService.removeProductsFromCheckout(executeWithRetry(() -> inputView.readRemovePromotionChoice(product)),
+                convenienceStore.counter(),
+                product.name()));
+    }
 
-        Order order = Order.createOrder(checkoutProducts, membershipDiscount);
+    public Choice membershipDiscountApply() {
+        return executeWithRetry(inputView::readMembershipDiscountChoice);
+    }
 
+    public Order confirmOrder(Choice membershipDiscount) {
+        return Order.createOrder(convenienceStore.counter(), membershipDiscount);
+    }
+
+    public void receipt(Order order) {
         Receipt receipt = new Receipt(order.getReceiptTotal(),
                 order.getReceiptPromotion(),
                 order.getMembershipDiscountPrice(convenienceStore.getMembershipDiscount()));
-
         ReceiptDto receiptDto = ReceiptDto.from(receipt);
-
         outputView.printReceipt(receiptDto);
+    }
 
-        inputView.readShopAgainChoice();
+    private <T> T executeWithRetry(Supplier<T> supplier) {
+        while (true) {
+            try {
+                return supplier.get();
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
 }

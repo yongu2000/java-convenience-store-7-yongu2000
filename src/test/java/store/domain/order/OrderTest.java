@@ -3,10 +3,8 @@ package store.domain.order;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.convenienceStore.MembershipDiscountByRate;
 import store.domain.product.*;
-import store.service.ConvenienceStoreService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

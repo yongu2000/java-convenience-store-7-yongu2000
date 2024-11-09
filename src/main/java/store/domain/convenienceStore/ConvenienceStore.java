@@ -10,10 +10,12 @@ import java.util.Iterator;
 public class ConvenienceStore {
     private final Products products;
     private final MembershipDiscount membershipDiscount;
+    private Products counter;
 
-    public ConvenienceStore(Products products, MembershipDiscount membershipDiscount) {
+    public ConvenienceStore(Products products, MembershipDiscount membershipDiscount, Products counter) {
         this.products = products;
         this.membershipDiscount = membershipDiscount;
+        this.counter = counter;
     }
 
     @Override
@@ -92,5 +94,13 @@ public class ConvenienceStore {
 
     public MembershipDiscount getMembershipDiscount() {
         return membershipDiscount;
+    }
+
+    public Products counter() {
+        return this.counter;
+    }
+
+    public void clearCounter() {
+        counter = new Products(new ArrayList<>());
     }
 }

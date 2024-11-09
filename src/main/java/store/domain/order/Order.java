@@ -1,7 +1,6 @@
 package store.domain.order;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import store.domain.convenienceStore.MembershipDiscount;
 import store.domain.product.Product;
@@ -19,8 +18,8 @@ public class Order {
         this.membershipDiscountStatus = membershipDiscountStatus;
     }
 
-    public static Order createOrder(Products orderProducts, Choice membershipDiscount) {
-        return new Order(orderProducts, membershipDiscount);
+    public static Order createOrder(Products orderProducts, Choice membershipDiscountStatus) {
+        return new Order(orderProducts, membershipDiscountStatus);
     }
 
     public Products getReceiptTotal() {

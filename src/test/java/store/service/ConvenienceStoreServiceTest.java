@@ -53,7 +53,7 @@ class ConvenienceStoreServiceTest {
         productList.add(commonProduct3);
 
         products = new Products(productList);
-        convenienceStore = new ConvenienceStore(products, new MembershipDiscountByRate());
+        convenienceStore = new ConvenienceStore(products, new MembershipDiscountByRate(), new Products(new ArrayList<>()));
         convenienceStoreService = new ConvenienceStoreService(convenienceStore);
         orderProducts = new ArrayList<>();
     }
@@ -113,8 +113,8 @@ class ConvenienceStoreServiceTest {
         orderProducts.add(ProductDto.of("콜라", 2));
         orderProducts.add(ProductDto.of("사이다", 5));
 
-        Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
-        List<ProductDto> productDtos = convenienceStoreService.availablePromotionProducts(checkoutProducts);
+        convenienceStoreService.checkout(orderProducts);
+        List<ProductDto> productDtos = convenienceStoreService.availablePromotionProducts(convenienceStore.counter());
 
         assertThat(productDtos).hasSize(2)
             .contains(ProductDto.of("콜라", 1), ProductDto.of("사이다", 1));
@@ -126,8 +126,8 @@ class ConvenienceStoreServiceTest {
         orderProducts.add(ProductDto.of("콜라", 11));
         orderProducts.add(ProductDto.of("사이다", 10));
 
-        Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
-        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
+        convenienceStoreService.checkout(orderProducts);
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(convenienceStore.counter());
         assertThat(availablePromotionProducts).hasSize(0);
     }
 
@@ -137,15 +137,15 @@ class ConvenienceStoreServiceTest {
         orderProducts.add(ProductDto.of("콜라", 2));
         orderProducts.add(ProductDto.of("사이다", 2));
 
-        Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
-        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
+        convenienceStoreService.checkout(orderProducts);
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(convenienceStore.counter());
         availablePromotionProducts.forEach(product -> {
-            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product.name(), product.quantity());
+            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, convenienceStore.counter(), product.name(), product.quantity());
         });
         assertThat(convenienceStore.toString())
                 .isEqualToIgnoringWhitespace("- 콜라 1,000원 7개 탄산2+1 - 콜라 1,000원 10개 - 사이다 1,000원 7개 탄산2+1 - 사이다 1,000원 10개 - 오렌지주스 1,800원 9개 MD추천상품 - 에너지바 2,000원 5개");
 
-        assertThat(checkoutProducts.toString())
+        assertThat(convenienceStore.counter().toString())
             .isEqualToIgnoringWhitespace("- 콜라 1,000원 3개 탄산2+1 - 사이다 1,000원 3개 탄산2+1");
     }
 
@@ -156,12 +156,12 @@ class ConvenienceStoreServiceTest {
         orderProducts.add(ProductDto.of("사이다", 15));
         orderProducts.add(ProductDto.of("오렌지주스", 4));
 
-        Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
-        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
+        convenienceStoreService.checkout(orderProducts);
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(convenienceStore.counter());
         availablePromotionProducts.forEach(product-> {
-            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product.name(), product.quantity());
+            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, convenienceStore.counter(), product.name(), product.quantity());
         });
-        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(checkoutProducts);
+        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(convenienceStore.counter());
         assertThat(unavailablePromotionProducts).hasSize(2)
             .contains(ProductDto.of("콜라", 4), ProductDto.of("사이다", 6));
     }
@@ -173,19 +173,19 @@ class ConvenienceStoreServiceTest {
         orderProducts.add(ProductDto.of("사이다", 15));
         orderProducts.add(ProductDto.of("오렌지주스", 4));
 
-        Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
-        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
+        convenienceStoreService.checkout(orderProducts);
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(convenienceStore.counter());
         availablePromotionProducts.forEach(product -> {
-            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product.name(), product.quantity());
+            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, convenienceStore.counter(), product.name(), product.quantity());
         });
-        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(checkoutProducts);
+        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(convenienceStore.counter());
         unavailablePromotionProducts.forEach(product -> {
-            convenienceStoreService.removeProductsFromCheckout(Choice.NO, checkoutProducts, product.name());
+            convenienceStoreService.removeProductsFromCheckout(Choice.NO, convenienceStore.counter(), product.name());
         });
 
         assertThat(convenienceStore.toString())
                 .isEqualToIgnoringWhitespace("- 콜라 1,000원 1개 탄산2+1 - 콜라 1,000원 10개 - 사이다 1,000원 1개 탄산2+1 - 사이다 1,000원 10개 - 오렌지주스 1,800원 5개 MD추천상품 - 에너지바 2,000원 5개");
-        assertThat(checkoutProducts.toString())
+        assertThat(convenienceStore.counter().toString())
             .isEqualToIgnoringWhitespace("- 콜라 1,000원 9개 탄산2+1 - 사이다 1,000원 9개 탄산2+1 - 오렌지주스 1,800원 4개 MD추천상품");
     }
 

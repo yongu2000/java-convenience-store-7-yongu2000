@@ -18,12 +18,10 @@ public class ConvenienceStoreService {
         this.convenienceStore = convenienceStore;
     }
 
-    public Products checkout(List<ProductDto> orderProducts) {
-        Products products = new Products(new ArrayList<>());
+    public void checkout(List<ProductDto> orderProducts) {
         for (ProductDto orderProduct : orderProducts) {
-            takeProducts(products, orderProduct.name(), orderProduct.quantity());
+            takeProducts(convenienceStore.counter(), orderProduct.name(), orderProduct.quantity());
         }
-        return products;
     }
 
     private void takeProducts(Products products, String productName, int quantity) {

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.domain.convenienceStore.ConvenienceStore;
+import store.domain.convenienceStore.MembershipDiscountByRate;
 import store.domain.product.*;
 import store.service.ConvenienceStoreService;
 
@@ -66,6 +67,14 @@ class OrderTest {
         assertThat(totalPromotionPrice.get("콜라")).isEqualTo(3000);
         assertThat(totalPromotionPrice.get("사이다")).isEqualTo(1000);
         assertThat(totalPromotionPrice.get("오렌지주스")).isEqualTo(1800);
+    }
+
+    @DisplayName("구매한 상품의 멤버십할인액")
+    @Test
+    void 구매한_상품의_멤버십할인액_할인율_사용() {
+        Order order = Order.createOrder(products, Choice.YES);
+        int membershipDiscountPrice = order.getMembershipDiscountPrice(new MembershipDiscountByRate());
+        assertThat(membershipDiscountPrice).isEqualTo(1800);
     }
 
 }

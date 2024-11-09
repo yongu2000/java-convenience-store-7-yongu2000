@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 public record ProductDto(
         String name,
+        int price,
         int quantity
 ) {
     private static final Pattern ITEM_PATTERN = Pattern.compile("\\[(.+?)-(\\d+)]");
@@ -36,7 +37,11 @@ public record ProductDto(
         });
     }
 
+    public static ProductDto of(String name, int price, int quantity) {
+        return new ProductDto(name, price, quantity);
+    }
+
     public static ProductDto of(String name, int quantity) {
-        return new ProductDto(name, quantity);
+        return new ProductDto(name, 0, quantity);
     }
 }

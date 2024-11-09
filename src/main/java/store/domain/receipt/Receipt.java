@@ -1,6 +1,7 @@
 package store.domain.receipt;
 
 import store.domain.product.Product;
+import store.domain.product.ProductDto;
 import store.domain.product.Products;
 
 import java.util.List;
@@ -16,12 +17,12 @@ public class Receipt {
         this.membershipDiscount = membershipDiscount;
     }
 
-    public Products getProducts() {
-        return products;
+    public List<ProductDto> getProducts() {
+        return products.stream().map(product -> ProductDto.of(product.getName(), product.getPrice(), product.getQuantity())).toList();
     }
 
-    public List<Product> getPromotionProducts() {
-        return promotionProducts.stream().toList();
+    public List<ProductDto> getPromotionProducts() {
+        return promotionProducts.stream().map(product -> ProductDto.of(product.getName(), product.getPrice(), product.getQuantity())).toList();
     }
 
     public int getTotalPrice() {

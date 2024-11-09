@@ -1,13 +1,12 @@
 package store.domain.receipt;
 
-import store.domain.product.Product;
-import store.domain.product.Products;
+import store.domain.product.ProductDto;
 
 import java.util.List;
 
 public record ReceiptDto (
-    Products products,
-    List<Product> promotionProducts,
+    List<ProductDto> products,
+    List<ProductDto> promotionProducts,
     int totalQuantity,
     int totalPrice,
     int promotionDiscount,

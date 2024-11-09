@@ -28,17 +28,26 @@ public class OutputView {
 
     public void printReceipt(ReceiptDto receiptDto) {
         System.out.print(RECEIPT_START);
-        System.out.print(RECEIPT_PRODUCTS_START);
-
-        receiptDto.products().stream().forEach(product -> {
-            System.out.printf(RECEIPT_PRODUCT, product.getName(), product.getQuantity(), product.getPrice());
-                }
-        );
-        System.out.print(RECEIPT_PROMOTION_PRODUCTS_START);
-        receiptDto.promotionProducts().forEach(product -> {
-            System.out.printf(RECEIPT_PROMOTION_PRODUCT, product.getName(), product.getQuantity());
-        });
+        printReceiptProducts(receiptDto);
+        printReceiptPromotionProducts(receiptDto);
         System.out.print(RECEIPT_END);
+        printReceiptPrices(receiptDto);
+    }
+
+    private void printReceiptProducts(ReceiptDto receiptDto) {
+        System.out.print(RECEIPT_PRODUCTS_START);
+        receiptDto.products()
+                .forEach(product -> System.out.printf(RECEIPT_PRODUCT, product.name(), product.quantity(), product.price()));
+    }
+
+    private void printReceiptPromotionProducts(ReceiptDto receiptDto) {
+        System.out.print(RECEIPT_PROMOTION_PRODUCTS_START);
+        receiptDto.promotionProducts()
+                .forEach(product -> System.out.printf(RECEIPT_PROMOTION_PRODUCT, product.name(), product.quantity())
+        );
+    }
+
+    private void printReceiptPrices(ReceiptDto receiptDto) {
         System.out.printf(RECEIPT_TOTAL_PRICE, receiptDto.totalQuantity(), receiptDto.totalPrice());
         System.out.printf(RECEIPT_PROMOTION_DISCOUNT, receiptDto.promotionDiscount());
         System.out.printf(RECEIPT_MEMBERSHIP_DISCOUNT, receiptDto.membershipDiscount());

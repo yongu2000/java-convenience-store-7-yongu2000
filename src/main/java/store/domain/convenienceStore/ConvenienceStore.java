@@ -9,9 +9,11 @@ import java.util.Iterator;
 
 public class ConvenienceStore {
     private final Products products;
+    private final MembershipDiscount membershipDiscount;
 
-    public ConvenienceStore(Products products) {
+    public ConvenienceStore(Products products, MembershipDiscount membershipDiscount) {
         this.products = products;
+        this.membershipDiscount = membershipDiscount;
     }
 
     @Override
@@ -94,5 +96,7 @@ public class ConvenienceStore {
         return product.checkIfPromotionAvailable(date);
     }
 
-
+    public MembershipDiscount getMembershipDiscount() {
+        return membershipDiscount;
+    }
 }

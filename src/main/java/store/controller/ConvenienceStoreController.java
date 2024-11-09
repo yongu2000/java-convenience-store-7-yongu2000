@@ -37,7 +37,7 @@ public class ConvenienceStoreController {
 
         Map<String, Integer> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(checkoutProducts);
         unavailablePromotionProducts.forEach((product, value) -> {
-            convenienceStoreService.removeProductsFromCheckout(Choice.YES, checkoutProducts, product);
+            convenienceStoreService.removeProductsFromCheckout(Choice.NO, checkoutProducts, product);
         });
         System.out.println(unavailablePromotionProducts);
 
@@ -46,8 +46,9 @@ public class ConvenienceStoreController {
 
         TotalPrice totalPrice = order.getTotalPrice();
         TotalPrice totalPromotionPrice = order.getTotalPromotionPrice();
+        int membershipDiscountPrice = order.getMembershipDiscountPrice(convenienceStore.getMembershipDiscount());
 
-
+        System.out.println(membershipDiscountPrice);
         System.out.println(convenienceStore);
     }
 

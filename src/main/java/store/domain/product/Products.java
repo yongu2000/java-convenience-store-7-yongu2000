@@ -1,7 +1,11 @@
 package store.domain.product;
 
+import store.domain.order.TotalPrice;
+
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,7 +24,6 @@ public class Products {
     public void add(Products products) {
         products.stream().forEach(this.products::add);
     }
-
 
     @Override
     public String toString() {
@@ -44,5 +47,6 @@ public class Products {
     public Stream<Product> stream() {
         return products.stream();
     }
+
 
 }

@@ -2,10 +2,12 @@ package store.domain.order;
 
 import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
-import store.domain.product.CommonProduct;
+import store.domain.convenienceStore.MembershipDiscount;
 import store.domain.product.Product;
 import store.domain.product.Products;
 import store.domain.product.PromotionProduct;
@@ -14,11 +16,11 @@ public class Order {
 
     private final Products purchasedProducts;
     private final LocalDate orderDate;
-    private final Choice membershipDiscount;
+    private final Choice membershipDiscountStatus;
 
-    private Order(Products orderProducts, Choice membershipDiscount) {
+    private Order(Products orderProducts, Choice membershipDiscountStatus) {
         this.purchasedProducts = orderProducts;
-        this.membershipDiscount = membershipDiscount;
+        this.membershipDiscountStatus = membershipDiscountStatus;
         this.orderDate = LocalDate.from(DateTimes.now());
     }
 
@@ -28,6 +30,7 @@ public class Order {
 
     public TotalPrice getTotalPrice() {
         Map<String, Integer> totalPrice = new LinkedHashMap<>();
+        List<Product> products = new ArrayList<>();
         purchasedProducts.stream().forEach(product ->
                 totalPrice.merge(product.getName(), product.getTotalPrice(), Integer::sum)
         );
@@ -41,5 +44,10 @@ public class Order {
                 .map(PromotionProduct.class::cast)
                 .forEach(product -> totalPrice.put(product.getName(), product.getPromotionDiscountPrice()));
         return new TotalPrice(totalPrice);
+    }
+
+    public int getMembershipDiscountPrice(MembershipDiscount membershipDiscount) {
+        if (membershipDiscountStatus.equals(Choice.YES)) return membershipDiscount.getDiscountPrice(purchasedProducts);
+        return 0;
     }
 }

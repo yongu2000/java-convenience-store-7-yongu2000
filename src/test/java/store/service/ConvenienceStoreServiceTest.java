@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.domain.convenienceStore.ConvenienceStore;
+import store.domain.convenienceStore.MembershipDiscountByRate;
 import store.domain.order.Choice;
 import store.domain.product.*;
 
@@ -51,7 +52,7 @@ class ConvenienceStoreServiceTest {
         productList.add(commonProduct3);
 
         products = new Products(productList);
-        convenienceStore = new ConvenienceStore(products);
+        convenienceStore = new ConvenienceStore(products, new MembershipDiscountByRate());
         convenienceStoreService = new ConvenienceStoreService(convenienceStore);
     }
 

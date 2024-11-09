@@ -14,28 +14,28 @@ public abstract class Product {
         this.quantity = quantity;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public boolean equals(String productName) {
-        return productName.equals(name);
+    public int getPrice() {
+        return price;
     }
 
     public int getQuantity() {
         return quantity;
     }
 
-    public void removeQuantity(int value) {
-        quantity -= value;
-    }
-
     public void addQuantity(int value) {
         quantity += value;
     };
 
-    public int getPrice() {
-        return price;
+    public void removeQuantity(int value) {
+        quantity -= value;
+    }
+
+    public boolean equals(String productName) {
+        return productName.equals(name);
     }
 
     @Override

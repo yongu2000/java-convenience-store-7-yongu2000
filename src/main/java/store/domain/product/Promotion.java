@@ -25,7 +25,11 @@ public class Promotion {
         return new Promotion(name, buy, get, startDate, endDate);
     }
 
-    public boolean checkAvailable(LocalDate orderDate) {
+    public boolean isApplicable() {
+        return applicable;
+    }
+
+    private boolean checkAvailable(LocalDate orderDate) {
         return orderDate.isAfter(startDate) && orderDate.isBefore(endDate);
     }
 
@@ -40,10 +44,6 @@ public class Promotion {
 
     public int getAppliedPromotionQuantity(int quantity) {
         return quantity / (buy+get) * get;
-    }
-
-    public boolean isApplicable() {
-        return applicable;
     }
 
     @Override

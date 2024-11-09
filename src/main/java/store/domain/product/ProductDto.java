@@ -14,6 +14,14 @@ public record ProductDto(
 ) {
     private static final Pattern ITEM_PATTERN = Pattern.compile("\\[(.+?)-(\\d+)]");
 
+    public static ProductDto of(String name, int price, int quantity) {
+        return new ProductDto(name, price, quantity);
+    }
+
+    public static ProductDto of(String name, int quantity) {
+        return new ProductDto(name, 0, quantity);
+    }
+
     public static List<ProductDto> from(String inputString) {
         validateInputString(inputString);
         return parseStringToProductDto(inputString);
@@ -35,13 +43,5 @@ public record ProductDto(
         Arrays.stream(stringProducts).forEach(stringProduct -> {
             if (!ITEM_PATTERN.matcher(stringProduct).matches()) throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
         });
-    }
-
-    public static ProductDto of(String name, int price, int quantity) {
-        return new ProductDto(name, price, quantity);
-    }
-
-    public static ProductDto of(String name, int quantity) {
-        return new ProductDto(name, 0, quantity);
     }
 }

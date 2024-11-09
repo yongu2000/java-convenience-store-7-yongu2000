@@ -25,16 +25,19 @@ public class PromotionProduct extends Product{
         return promotion.checkAvailable(orderDate);
     }
 
-    public int applyPromotionQuantity(int orderProductQuantity) {
-        return promotion.getPromotionQuantity(orderProductQuantity);
-    }
-
-
     public int getAvailablePromotionQuantity() {
-        return promotion.getPromotionQuantity(quantity);
+        return promotion.getAvailablePromotionQuantity(quantity);
     }
 
     public int getUnavailablePromotionQuantity() {
         return promotion.getUnavailablePromotionQuantity(quantity);
+    }
+
+    public int getAppliedPromotionQuantity() {
+        return promotion.getAppliedPromotionQuantity(quantity);
+    }
+
+    public int getPromotionDiscountPrice() {
+        return getAvailablePromotionQuantity() * price;
     }
 }

@@ -45,6 +45,7 @@ public class ConvenienceStoreController {
         Order order = Order.createOrder(checkoutProducts, membershipDiscount);
 
         TotalPrice totalPrice = order.getTotalPrice();
+        TotalPrice totalPromotionPrice = order.getTotalPromotionPrice();
 
 
         System.out.println(convenienceStore);

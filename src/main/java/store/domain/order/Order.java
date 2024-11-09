@@ -33,4 +33,13 @@ public class Order {
         );
         return new TotalPrice(totalPrice);
     }
+
+    public TotalPrice getTotalPromotionPrice() {
+        Map<String, Integer> totalPrice = new LinkedHashMap<>();
+        purchasedProducts.stream()
+                .filter(product -> product instanceof PromotionProduct)
+                .map(PromotionProduct.class::cast)
+                .forEach(product -> totalPrice.put(product.getName(), product.getPromotionDiscountPrice()));
+        return new TotalPrice(totalPrice);
+    }
 }

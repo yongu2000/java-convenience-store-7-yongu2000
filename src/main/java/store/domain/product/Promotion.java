@@ -30,12 +30,16 @@ public class Promotion {
         return orderDate.isAfter(startDate) && orderDate.isBefore(endDate);
     }
 
-    public int getPromotionQuantity(int orderProductQuantity) {
-        if (orderProductQuantity % (buy+get) == buy) return get;
+    public int getAvailablePromotionQuantity(int quantity) {
+        if (quantity % (buy+get) >= buy) return (buy+get) - quantity % (buy+get);
         return 0;
     }
 
     public int getUnavailablePromotionQuantity(int orderProductQuantity) {
-        return orderProductQuantity - orderProductQuantity/(buy+get) * (buy+get);
+        return orderProductQuantity % (buy+get);
+    }
+
+    public int getAppliedPromotionQuantity(int quantity) {
+        return quantity / (buy+get) * get;
     }
 }

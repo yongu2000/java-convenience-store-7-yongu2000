@@ -5,7 +5,6 @@ import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.convenienceStore.ConvenienceStoreInitializeByFile;
 import store.domain.convenienceStore.MembershipDiscountByRate;
 import store.domain.order.Choice;
-import store.domain.order.parser.StringToMapParser;
 import store.domain.product.Products;
 import store.service.ConvenienceStoreService;
 import store.view.InputView;

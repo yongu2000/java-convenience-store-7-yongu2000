@@ -18,12 +18,10 @@ public class ConvenienceStoreService {
         this.convenienceStore = convenienceStore;
     }
 
-    public Products checkout(Map<String, Integer> orderProducts) {
+    public Products checkout(List<ProductDto> orderProducts) {
         Products products = new Products(new ArrayList<>());
-        for (Map.Entry<String, Integer> orderProduct : orderProducts.entrySet()) {
-            String productName = orderProduct.getKey();
-            int quantity = orderProduct.getValue();
-            takeProducts(products, productName, quantity);
+        for (ProductDto orderProduct : orderProducts) {
+            takeProducts(products, orderProduct.name(), orderProduct.quantity());
         }
         return products;
     }

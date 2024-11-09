@@ -3,7 +3,6 @@ package store.controller;
 import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.order.Choice;
 import store.domain.order.Order;
-import store.domain.order.parser.StringToMapParser;
 import store.domain.product.ProductDto;
 import store.domain.product.Products;
 import store.domain.receipt.Receipt;
@@ -31,8 +30,7 @@ public class ConvenienceStoreController {
 
     public void run() {
         outputView.printStoreInformation(convenienceStore.toString());
-        StringToMapParser stringToMapParser = new StringToMapParser();
-        Products checkoutProducts = convenienceStoreService.checkout(stringToMapParser.parse(inputView.readOrder()));
+        Products checkoutProducts = convenienceStoreService.checkout(ProductDto.from(inputView.readOrder()));
 
         List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
         availablePromotionProducts.forEach(product -> convenienceStoreService.addPromotionProductToCheckout(inputView.readAddPromotionChoice(product), checkoutProducts, product.name(), product.quantity()));

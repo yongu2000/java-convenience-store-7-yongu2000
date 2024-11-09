@@ -46,7 +46,7 @@ public class ConvenienceStoreService {
         int availablePromotionQuantity = promotionProduct.getAvailablePromotionQuantity();
         PromotionProduct storeProduct = convenienceStore.findPromotionProductByName(promotionProduct.getName());
 
-        if (storeProduct != null && storeProduct.getQuantity() > 0 && storeProduct.getQuantity() >= availablePromotionQuantity) {
+        if (storeProduct != null && storeProduct.getQuantity() > 0 && storeProduct.getQuantity() >= availablePromotionQuantity && availablePromotionQuantity > 0) {
             availablePromotionProducts.add(ProductDto.of(promotionProduct.getName(), availablePromotionQuantity));
         }
     }

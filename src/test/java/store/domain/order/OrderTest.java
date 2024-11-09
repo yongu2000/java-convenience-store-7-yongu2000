@@ -45,9 +45,9 @@ class OrderTest {
         products = new Products(productList);
     }
 
-    @DisplayName("구매한 상품의 총 금액 반환")
+    @DisplayName("구매한 상품의 총구매액 반환")
     @Test
-    void 구매한_상품의_총_금액() {
+    void 구매한_상품의_총구매액() {
         Order order = Order.createOrder(products, Choice.YES);
         TotalPrice totalPrice = order.getTotalPrice();
 
@@ -55,6 +55,17 @@ class OrderTest {
         assertThat(totalPrice.get("사이다")).isEqualTo(3000);
         assertThat(totalPrice.get("오렌지주스")).isEqualTo(3600);
         assertThat(totalPrice.get("에너지바")).isEqualTo(2000);
+    }
+
+    @DisplayName("구매한 상품의 행사할인액")
+    @Test
+    void 구매한_상품의_행사할인액() {
+        Order order = Order.createOrder(products, Choice.YES);
+        TotalPrice totalPromotionPrice = order.getTotalPromotionPrice();
+
+        assertThat(totalPromotionPrice.get("콜라")).isEqualTo(3000);
+        assertThat(totalPromotionPrice.get("사이다")).isEqualTo(1000);
+        assertThat(totalPromotionPrice.get("오렌지주스")).isEqualTo(1800);
     }
 
 }

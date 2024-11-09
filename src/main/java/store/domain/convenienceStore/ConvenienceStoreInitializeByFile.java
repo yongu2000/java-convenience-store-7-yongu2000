@@ -19,35 +19,43 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
 
     @Override
     public Products products() {
-        List<Promotion> promotionsFromFile = loadPromotionsFromFile(PROMOTIONS_FILE_PATH);
-        List<Product> productsFromFile = loadProductsFromFile(PRODUCTS_FILE_PATH, promotionsFromFile);
+        List<Promotion> promotionsFromFile = loadPromotionsFromFile();
+        List<Product> productsFromFile = loadProductsFromFile(promotionsFromFile);
         return new Products(productsFromFile);
     }
 
-        private List<Promotion> loadPromotionsFromFile(String filePath) {
-        List<Promotion> promotions = new ArrayList<>();
-        try (BufferedReader reader = openFile(filePath)) {
-            reader.readLine(); // name,buy,get,start_date,end_date 스킵
-            String line;
-            while ((line = reader.readLine()) != null) {
-                promotions.add(parsePromotion(line));
-            }
+    private List<Promotion> loadPromotionsFromFile() {
+        try (BufferedReader reader = openFile(ConvenienceStoreInitializeByFile.PROMOTIONS_FILE_PATH)) {
+            reader.readLine();
+            return parsePromotions(reader);
         } catch (IOException e) {
-            throw new RuntimeException("[ERROR] 파일을 읽을 수 없습니다: " + filePath);
+            throw new RuntimeException("[ERROR] 파일을 읽을 수 없습니다: " + ConvenienceStoreInitializeByFile.PROMOTIONS_FILE_PATH);
+        }
+    }
+
+    private List<Promotion> parsePromotions(BufferedReader reader) throws IOException {
+        List<Promotion> promotions = new ArrayList<>();
+        String promotionString;
+        while ((promotionString = reader.readLine()) != null) {
+            promotions.add(parsePromotion(promotionString));
         }
         return promotions;
     }
 
-    private List<Product> loadProductsFromFile(String filePath, List<Promotion> promotions) {
-        List<Product> products = new ArrayList<>();
-        try (BufferedReader reader = openFile(filePath)) {
-            reader.readLine(); // name,price,quantity,promotion 스킵
-            String line;
-            while ((line = reader.readLine()) != null) {
-                products.add(parseProduct(line, promotions));
-            }
+    private List<Product> loadProductsFromFile(List<Promotion> promotions) {
+        try (BufferedReader reader = openFile(ConvenienceStoreInitializeByFile.PRODUCTS_FILE_PATH)) {
+            reader.readLine();
+            return parseProducts(reader, promotions);
         } catch (IOException e) {
-            throw new RuntimeException("[ERROR] 파일을 읽을 수 없습니다: " + filePath);
+            throw new RuntimeException("[ERROR] 파일을 읽을 수 없습니다: " + ConvenienceStoreInitializeByFile.PRODUCTS_FILE_PATH);
+        }
+    }
+
+    private List<Product> parseProducts(BufferedReader reader, List<Promotion> promotions) throws IOException {
+        List<Product> products = new ArrayList<>();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            products.add(parseProduct(line, promotions));
         }
         return products;
     }
@@ -56,14 +64,15 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
         return new BufferedReader(new FileReader(filePath));
     }
 
-    private Promotion parsePromotion(String line) {
-        String[] split = line.split(",");
-        String name = split[0];
-        int buy = Integer.parseInt(split[1]);
-        int get = Integer.parseInt(split[2]);
-        LocalDate startDate = LocalDate.parse(split[3], DATE_FORMATTER);
-        LocalDate endDate = LocalDate.parse(split[4], DATE_FORMATTER);
-        return Promotion.of(name, buy, get, startDate, endDate);
+    private Promotion parsePromotion(String promotionString) {
+        String[] split = promotionString.split(",");
+        return Promotion.of(
+                split[0],
+                Integer.parseInt(split[1]),
+                Integer.parseInt(split[2]),
+                LocalDate.parse(split[3], DATE_FORMATTER),
+                LocalDate.parse(split[4], DATE_FORMATTER)
+        );
     }
 
     private Product parseProduct(String line, List<Promotion> promotions) {
@@ -71,14 +80,21 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
         String name = split[0];
         int price = Integer.parseInt(split[1]);
         int quantity = Integer.parseInt(split[2]);
+        return createProduct(name, price, quantity, split[3], promotions);
+    }
 
-        if (!split[3].equals("null")) {
-            Promotion promotion = promotions.stream()
-                .filter(p -> p.toString().equals(split[3]))
+    private Product createProduct(String name, int price, int quantity, String promotionString, List<Promotion> promotions) {
+        if (promotionString.equals("null")) {
+            return new CommonProduct(name, price, quantity);
+        }
+        Promotion promotion = findPromotion(promotionString, promotions);
+        return new PromotionProduct(name, price, quantity, promotion);
+    }
+
+    private Promotion findPromotion(String promotionString, List<Promotion> promotions) {
+        return promotions.stream()
+                .filter(promotion -> promotion.toString().equals(promotionString))
                 .findFirst()
                 .orElse(null);
-            return new PromotionProduct(name, price, quantity, promotion);
-        }
-        return new CommonProduct(name, price, quantity);
     }
 }

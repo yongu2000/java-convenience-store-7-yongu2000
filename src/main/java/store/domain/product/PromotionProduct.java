@@ -37,7 +37,7 @@ public class PromotionProduct extends Product{
         return getUnavailablePromotionQuantity() * price;
     }
 
-    public int getPromotionDiscountPrice() {
-        return promotion.getAppliedPromotionQuantity(quantity) * price;
+    public int getPromotionDiscountQuantity() {
+        return promotion.getAppliedPromotionQuantity(quantity);
     }
 }

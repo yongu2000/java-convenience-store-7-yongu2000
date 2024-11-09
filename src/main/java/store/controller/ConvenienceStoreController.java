@@ -3,9 +3,9 @@ package store.controller;
 import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.order.Choice;
 import store.domain.order.Order;
-import store.domain.order.TotalPrice;
 import store.domain.order.parser.StringToMapParser;
 import store.domain.product.Products;
+import store.domain.receipt.Receipt;
 import store.service.ConvenienceStoreService;
 
 import java.util.Map;
@@ -44,11 +44,16 @@ public class ConvenienceStoreController {
         Choice membershipDiscount = Choice.ofString("Y");
         Order order = Order.createOrder(checkoutProducts, membershipDiscount);
 
-        TotalPrice totalPrice = order.getTotalPrice();
-        TotalPrice totalPromotionPrice = order.getTotalPromotionPrice();
+        Products totalPrice = order.getReceiptTotal();
+        Products totalPromotionPrice = order.getReceiptPromotion();
         int membershipDiscountPrice = order.getMembershipDiscountPrice(convenienceStore.getMembershipDiscount());
 
-        System.out.println(membershipDiscountPrice);
+        Receipt receipt = new Receipt(totalPrice, totalPromotionPrice, membershipDiscountPrice);
+
+        System.out.println(receipt.getTotalPrice());
+        System.out.println(receipt.getPromotionDiscount());
+        System.out.println(receipt.getMembershipDiscount());
+        System.out.println(receipt.getCustomerPrice());
         System.out.println(convenienceStore);
     }
 

@@ -50,23 +50,41 @@ class OrderTest {
     @Test
     void 구매한_상품의_총구매액() {
         Order order = Order.createOrder(products, Choice.YES);
-        TotalPrice totalPrice = order.getTotalPrice();
+        Products receiptTotal = order.getReceiptTotal();
 
-        assertThat(totalPrice.get("콜라")).isEqualTo(13000);
-        assertThat(totalPrice.get("사이다")).isEqualTo(3000);
-        assertThat(totalPrice.get("오렌지주스")).isEqualTo(3600);
-        assertThat(totalPrice.get("에너지바")).isEqualTo(2000);
+        List<Product> productList = new ArrayList<>();
+        Product product = new ReceiptProduct("콜라", 13000, 13);
+        Product product2 = new ReceiptProduct("사이다", 3000, 3);
+        Product product3 = new ReceiptProduct("오렌지주스", 3600, 2);
+        Product product4 = new ReceiptProduct("에너지바", 2000, 1);
+        productList.add(product);
+        productList.add(product2);
+        productList.add(product3);
+        productList.add(product4);
+
+        Products expectedProducts = new Products(productList);
+
+        assertThat(receiptTotal.stream().count()).isEqualTo(4);
+        assertThat(receiptTotal).isEqualTo(expectedProducts);
     }
 
     @DisplayName("구매한 상품의 행사할인액")
     @Test
     void 구매한_상품의_행사할인액() {
         Order order = Order.createOrder(products, Choice.YES);
-        TotalPrice totalPromotionPrice = order.getTotalPromotionPrice();
+        Products totalPromotionPrice = order.getReceiptPromotion();
 
-        assertThat(totalPromotionPrice.get("콜라")).isEqualTo(3000);
-        assertThat(totalPromotionPrice.get("사이다")).isEqualTo(1000);
-        assertThat(totalPromotionPrice.get("오렌지주스")).isEqualTo(1800);
+        List<Product> productList = new ArrayList<>();
+        Product product = new ReceiptProduct("콜라", 3000, 3);
+        Product product2 = new ReceiptProduct("사이다", 1000, 1);
+        Product product3 = new ReceiptProduct("오렌지주스", 1800, 1);
+        productList.add(product);
+        productList.add(product2);
+        productList.add(product3);
+
+        Products expectedProducts = new Products(productList);
+        assertThat(totalPromotionPrice.stream().count()).isEqualTo(3);
+        assertThat(totalPromotionPrice).isEqualTo(expectedProducts);
     }
 
     @DisplayName("구매한 상품의 멤버십할인액")

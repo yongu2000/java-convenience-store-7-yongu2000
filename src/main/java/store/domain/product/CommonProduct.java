@@ -11,4 +11,7 @@ public class CommonProduct extends Product {
         product.removeQuantity(quantity);
     }
 
+    public int getTotalPrice() {
+        return price * quantity;
+    }
 }

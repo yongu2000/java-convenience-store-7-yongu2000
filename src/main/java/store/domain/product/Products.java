@@ -1,11 +1,6 @@
 package store.domain.product;
 
-import store.domain.order.TotalPrice;
-
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,12 +27,22 @@ public class Products {
             .collect(Collectors.joining("\n"));
     }
 
+    public Iterator<Product> findProductByName(String productName) {
+        return products.stream()
+                .filter(product -> product.equals(productName))
+                .iterator();
+    }
+
     public PromotionProduct findPromotionProductByName(String productName) {
-        return (PromotionProduct) products.stream().filter(p -> p.equals(productName) && p instanceof PromotionProduct).findFirst().orElse(null);
+        return (PromotionProduct) products.stream()
+                .filter(p -> p.equals(productName) && p instanceof PromotionProduct)
+                .findFirst().orElse(null);
     }
 
     public CommonProduct findCommonProductByName(String productName) {
-        return (CommonProduct) products.stream().filter(p -> p.equals(productName) && p instanceof CommonProduct).findFirst().orElse(null);
+        return (CommonProduct) products.stream()
+                .filter(p -> p.equals(productName) && p instanceof CommonProduct)
+                .findFirst().orElse(null);
     }
 
     public void removeCommonProduct(Product product) {
@@ -48,5 +53,16 @@ public class Products {
         return products.stream();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Products products1 = (Products) o;
+        return Objects.equals(products, products1.products);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(products);
+    }
 }

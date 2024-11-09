@@ -1,49 +1,61 @@
 package store.domain.order;
 
-import camp.nextstep.edu.missionutils.DateTimes;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import store.domain.convenienceStore.MembershipDiscount;
 import store.domain.product.Product;
 import store.domain.product.Products;
 import store.domain.product.PromotionProduct;
+import store.domain.product.ReceiptProduct;
 
 public class Order {
 
     private final Products purchasedProducts;
-    private final LocalDate orderDate;
     private final Choice membershipDiscountStatus;
 
     private Order(Products orderProducts, Choice membershipDiscountStatus) {
         this.purchasedProducts = orderProducts;
         this.membershipDiscountStatus = membershipDiscountStatus;
-        this.orderDate = LocalDate.from(DateTimes.now());
     }
 
     public static Order createOrder(Products orderProducts, Choice membershipDiscount) {
         return new Order(orderProducts, membershipDiscount);
     }
 
-    public TotalPrice getTotalPrice() {
-        Map<String, Integer> totalPrice = new LinkedHashMap<>();
+    public Products getReceiptTotal() {
+        Map<String, Integer> totalProductsPrice = createTotalProductPriceData();
+        Map<String, Integer> totalProductsQuantity = createTotalProductQuantityData();
         List<Product> products = new ArrayList<>();
-        purchasedProducts.stream().forEach(product ->
-                totalPrice.merge(product.getName(), product.getTotalPrice(), Integer::sum)
-        );
-        return new TotalPrice(totalPrice);
+        totalProductsPrice.keySet().forEach(productName -> {
+            products.add(new ReceiptProduct(productName, totalProductsPrice.get(productName), totalProductsQuantity.get(productName)));
+        });
+        return new Products(products);
     }
 
-    public TotalPrice getTotalPromotionPrice() {
-        Map<String, Integer> totalPrice = new LinkedHashMap<>();
+    private Map<String, Integer> createTotalProductPriceData() {
+        Map<String, Integer> totalProductsPrice = new LinkedHashMap<>();
+        purchasedProducts.stream().forEach(product ->
+                totalProductsPrice.merge(product.getName(), product.getPrice() * product.getQuantity(), Integer::sum)
+        );
+        return totalProductsPrice;
+    }
+
+    private Map<String, Integer> createTotalProductQuantityData() {
+        Map<String, Integer> totalProductsQuantity = new LinkedHashMap<>();
+        purchasedProducts.stream().forEach(product ->
+                totalProductsQuantity.merge(product.getName(), product.getQuantity(), Integer::sum)
+        );
+        return totalProductsQuantity;
+    }
+
+    public Products getReceiptPromotion() {
+        List<Product> products = new ArrayList<>();
         purchasedProducts.stream()
                 .filter(product -> product instanceof PromotionProduct)
                 .map(PromotionProduct.class::cast)
-                .forEach(product -> totalPrice.put(product.getName(), product.getPromotionDiscountPrice()));
-        return new TotalPrice(totalPrice);
+                .forEach(product -> products.add(new ReceiptProduct(product.getName(), product.getPrice() * product.getPromotionDiscountQuantity(), product.getPromotionDiscountQuantity())));
+        return new Products(products);
     }
 
     public int getMembershipDiscountPrice(MembershipDiscount membershipDiscount) {

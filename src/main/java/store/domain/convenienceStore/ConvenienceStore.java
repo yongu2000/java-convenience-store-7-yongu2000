@@ -38,22 +38,16 @@ public class ConvenienceStore {
         return takenProducts;
     }
 
-    public Iterator<Product> findProductByName(String productName) {
-        return products.stream()
-                .filter(product -> product.equals(productName))
-                .iterator();
+    private Iterator<Product> findProductByName(String productName) {
+        return products.findProductByName(productName);
     }
 
     public PromotionProduct findPromotionProductByName(String productName) {
-        return (PromotionProduct) products.stream()
-                .filter(product -> product.equals(productName) && product instanceof PromotionProduct)
-                .findFirst().orElse(null);
+        return products.findPromotionProductByName(productName);
     }
 
     public CommonProduct findCommonProductByName(String productName) {
-        return (CommonProduct) products.stream()
-                .filter(product -> product.equals(productName) && product instanceof CommonProduct)
-                .findFirst().orElse(null);
+        return products.findCommonProductByName(productName);
     }
 
     private int processProduct(Product product, Products takenProducts, int remainingQuantity) {

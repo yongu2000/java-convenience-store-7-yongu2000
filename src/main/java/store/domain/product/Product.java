@@ -25,14 +25,10 @@ public abstract class Product {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || (o.getClass() != CommonProduct.class && o.getClass() != PromotionProduct.class)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return Objects.equals(name, product.name);
+        return price == product.price && quantity == product.quantity && Objects.equals(name, product.name);
     }
 
     @Override
@@ -52,15 +48,11 @@ public abstract class Product {
         quantity -= value;
     }
 
-    public void setQuantity(int value) {
-        quantity = value;
-    }
-
     public void addQuantity(int value) {
         quantity += value;
     };
 
-    public int getTotalPrice() {
-        return price * quantity;
+    public int getPrice() {
+        return price;
     }
 }

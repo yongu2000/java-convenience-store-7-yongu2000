@@ -116,9 +116,11 @@ class ConvenienceStoreServiceTest {
         orderProducts.put("사이다", 5);
 
         Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
-        Map<String, Integer> stringIntegerMap = convenienceStoreService.availablePromotionProducts(checkoutProducts);
-        assertThat(stringIntegerMap).hasSize(2)
-            .contains(entry("콜라", 1), entry("사이다", 1));
+        List<ProductDto> productDtos = convenienceStoreService.availablePromotionProducts(checkoutProducts);
+
+
+        assertThat(productDtos).hasSize(2)
+            .contains(ProductDto.of("콜라", 1), ProductDto.of("사이다", 1));
     }
 
     @DisplayName("프로모션 재고 없는 상품은 목록에 미포함")
@@ -129,7 +131,7 @@ class ConvenienceStoreServiceTest {
         orderProducts.put("사이다", 10);
 
         Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
-        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
         assertThat(availablePromotionProducts).hasSize(0);
     }
 
@@ -141,9 +143,9 @@ class ConvenienceStoreServiceTest {
         orderProducts.put("사이다", 2);
 
         Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
-        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
-        availablePromotionProducts.forEach((product, value) -> {
-            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product, value);
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
+        availablePromotionProducts.forEach(product -> {
+            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product.name(), product.quantity());
         });
         assertThat(convenienceStore.toString())
             .isEqualToIgnoringWhitespace("- 콜라 1000원 7 탄산2+1 - 콜라 1000원 10 - 사이다 1000원 7 탄산2+1 - 사이다 1000원 10 - 오렌지주스 1800원 9 MD추천상품 - 에너지바 2000원 5");
@@ -160,13 +162,13 @@ class ConvenienceStoreServiceTest {
         orderProducts.put("오렌지주스", 4);
 
         Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
-        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
-        availablePromotionProducts.forEach((product, value) -> {
-            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product, value);
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
+        availablePromotionProducts.forEach(product-> {
+            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product.name(), product.quantity());
         });
-        Map<String, Integer> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(checkoutProducts);
+        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(checkoutProducts);
         assertThat(unavailablePromotionProducts).hasSize(2)
-            .contains(entry("콜라", 4), entry("사이다", 6));
+            .contains(ProductDto.of("콜라", 4), ProductDto.of("사이다", 6));
     }
 
     @DisplayName("프로모션 적용 불가능한 상품 제거하기")
@@ -178,13 +180,13 @@ class ConvenienceStoreServiceTest {
         orderProducts.put("오렌지주스", 4);
 
         Products checkoutProducts = convenienceStoreService.checkout(orderProducts);
-        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
-        availablePromotionProducts.forEach((product, value) -> {
-            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product, value);
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
+        availablePromotionProducts.forEach(product -> {
+            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, checkoutProducts, product.name(), product.quantity());
         });
-        Map<String, Integer> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(checkoutProducts);
-        unavailablePromotionProducts.forEach((product, value) -> {
-            convenienceStoreService.removeProductsFromCheckout(Choice.YES, checkoutProducts, product);
+        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(checkoutProducts);
+        unavailablePromotionProducts.forEach(product -> {
+            convenienceStoreService.removeProductsFromCheckout(Choice.NO, checkoutProducts, product.name());
         });
 
         assertThat(convenienceStore.toString())

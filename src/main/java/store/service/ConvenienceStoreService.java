@@ -6,6 +6,7 @@ import java.util.*;
 import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.order.Choice;
 import store.domain.product.CommonProduct;
+import store.domain.product.ProductDto;
 import store.domain.product.Products;
 import store.domain.product.PromotionProduct;
 
@@ -31,9 +32,8 @@ public class ConvenienceStoreService {
         products.add(convenienceStore.findProduct(productName, quantity));
     }
 
-    public Map<String, Integer> availablePromotionProducts(Products checkoutProducts) {
-        Map<String, Integer> availablePromotionProducts = new LinkedHashMap<>();
-
+    public List<ProductDto> availablePromotionProducts(Products checkoutProducts) {
+        List<ProductDto> availablePromotionProducts = new ArrayList<>();
         for (PromotionProduct promotionProduct : filterPromotionProducts(checkoutProducts)) {
             addAvailablePromotionProduct(availablePromotionProducts, promotionProduct);
         }
@@ -48,12 +48,12 @@ public class ConvenienceStoreService {
             .toList();
     }
 
-    private void addAvailablePromotionProduct(Map<String, Integer> availablePromotionProducts, PromotionProduct promotionProduct) {
+    private void addAvailablePromotionProduct(List<ProductDto> availablePromotionProducts, PromotionProduct promotionProduct) {
         int availablePromotionQuantity = promotionProduct.getAvailablePromotionQuantity();
         PromotionProduct storeProduct = convenienceStore.findPromotionProductByName(promotionProduct.getName());
 
         if (storeProduct != null && storeProduct.getQuantity() > 0 && storeProduct.getQuantity() >= availablePromotionQuantity) {
-            availablePromotionProducts.put(promotionProduct.getName(), availablePromotionQuantity);
+            availablePromotionProducts.add(ProductDto.of(promotionProduct.getName(), availablePromotionQuantity));
         }
     }
 
@@ -66,8 +66,8 @@ public class ConvenienceStoreService {
         promotionProduct.addQuantity(value);
     }
 
-    public Map<String, Integer> unavailablePromotionProducts(Products checkoutProducts) {
-        Map<String, Integer> unavailablePromotionProducts = new LinkedHashMap<>();
+    public List<ProductDto> unavailablePromotionProducts(Products checkoutProducts) {
+        List<ProductDto> unavailablePromotionProducts = new ArrayList<>();
 
         for (PromotionProduct promotionProduct : filterPromotionProducts(checkoutProducts)) {
             addUnavailablePromotionProduct(unavailablePromotionProducts, checkoutProducts, promotionProduct);
@@ -76,14 +76,14 @@ public class ConvenienceStoreService {
         return unavailablePromotionProducts;
     }
 
-    private void addUnavailablePromotionProduct(Map<String, Integer> unavailablePromotionProducts, Products checkoutProducts,
+    private void addUnavailablePromotionProduct(List<ProductDto> unavailablePromotionProducts, Products checkoutProducts,
         PromotionProduct promotionProduct) {
         CommonProduct commonProduct = checkoutProducts.findCommonProductByName(promotionProduct.getName());
         if (commonProduct == null) return;
         int unavailablePromotionQuantity = promotionProduct.getUnavailablePromotionQuantity();
         unavailablePromotionQuantity += commonProduct.getQuantity();
 
-        unavailablePromotionProducts.put(promotionProduct.getName(), unavailablePromotionQuantity);
+        unavailablePromotionProducts.add(ProductDto.of(promotionProduct.getName(), unavailablePromotionQuantity));
     }
 
     public void removeProductsFromCheckout(Choice choice, Products checkoutProducts, String product) {

@@ -4,6 +4,7 @@ import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.order.Choice;
 import store.domain.order.Order;
 import store.domain.order.parser.StringToMapParser;
+import store.domain.product.ProductDto;
 import store.domain.product.Products;
 import store.domain.receipt.Receipt;
 import store.domain.receipt.ReceiptDto;
@@ -11,6 +12,7 @@ import store.service.ConvenienceStoreService;
 import store.view.InputView;
 import store.view.OutputView;
 
+import java.util.List;
 import java.util.Map;
 
 public class ConvenienceStoreController {
@@ -32,15 +34,11 @@ public class ConvenienceStoreController {
         StringToMapParser stringToMapParser = new StringToMapParser();
         Products checkoutProducts = convenienceStoreService.checkout(stringToMapParser.parse(inputView.readOrder()));
 
-        Map<String, Integer> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
-        availablePromotionProducts.forEach((product, value) -> {
-            convenienceStoreService.addPromotionProductToCheckout(inputView.readAddPromotionChoice(), checkoutProducts, product, value);
-        });
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(checkoutProducts);
+        availablePromotionProducts.forEach(product -> convenienceStoreService.addPromotionProductToCheckout(inputView.readAddPromotionChoice(product), checkoutProducts, product.name(), product.quantity()));
 
-        Map<String, Integer> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(checkoutProducts);
-        unavailablePromotionProducts.forEach((product, value) -> {
-            convenienceStoreService.removeProductsFromCheckout(inputView.readRemovePromotionChoice(), checkoutProducts, product);
-        });
+        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(checkoutProducts);
+        unavailablePromotionProducts.forEach(product -> convenienceStoreService.removeProductsFromCheckout(inputView.readRemovePromotionChoice(product), checkoutProducts, product.name()));
 
         Choice membershipDiscount = inputView.readMembershipDiscountChoice();
 

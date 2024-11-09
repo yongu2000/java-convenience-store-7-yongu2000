@@ -16,7 +16,8 @@ public abstract class Product {
 
     @Override
     public String toString() {
-        return String.format("- %s %d원 %s", name, price, quantity).trim();
+        if (quantity > 0) return String.format("- %s %,d원 %s개", name, price, quantity).trim();
+        return String.format("- %s %,d원 재고없음", name, price).trim();
     }
 
     public String getName(){

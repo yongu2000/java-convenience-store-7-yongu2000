@@ -18,7 +18,8 @@ public class PromotionProduct extends Product{
 
     @Override
     public String toString() {
-        return String.format("- %s %d원 %s %s", name, price, quantity, promotion).trim();
+        if (quantity > 0) return String.format("- %s %,d원 %s개 %s", name, price, quantity, promotion).trim();
+        return String.format("- %s %,d원 재고없음 %s", name, price, promotion).trim();
     }
 
     public boolean checkIfPromotionAvailable(LocalDate orderDate) {

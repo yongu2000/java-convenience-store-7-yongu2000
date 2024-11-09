@@ -4,7 +4,6 @@ import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.order.Choice;
 import store.domain.order.Order;
 import store.domain.product.ProductDto;
-import store.domain.product.Products;
 import store.domain.receipt.Receipt;
 import store.domain.receipt.ReceiptDto;
 import store.service.ConvenienceStoreService;
@@ -46,7 +45,10 @@ public class ConvenienceStoreController {
     }
 
     public void productsToCounter() {
-        convenienceStoreService.checkout(ProductDto.from(executeWithRetry(inputView::readOrder)));
+        executeWithRetry(() -> {
+            convenienceStoreService.checkout(ProductDto.from(inputView.readOrder()));
+            return null;
+        });
     }
 
     public void promotionApplicable() {

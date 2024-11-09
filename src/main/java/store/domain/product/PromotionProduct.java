@@ -38,6 +38,6 @@ public class PromotionProduct extends Product{
     }
 
     public int getPromotionDiscountPrice() {
-        return getAvailablePromotionQuantity() * price;
+        return promotion.getAppliedPromotionQuantity(quantity) * price;
     }
 }

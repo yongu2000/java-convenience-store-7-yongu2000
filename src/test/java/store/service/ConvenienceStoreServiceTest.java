@@ -83,7 +83,7 @@ class ConvenienceStoreServiceTest {
         orderProducts.add(ProductDto.of("콜라", 13));
         convenienceStoreService.checkout(orderProducts);
         assertThat(convenienceStore.toString())
-                .isEqualToIgnoringWhitespace("- 콜라 1,000원 재고없음 탄산2+1 - 콜라 1,000원 7개 - 사이다 1,000원 10개 탄산2+1 - 사이다 1,000원 10개 - 오렌지주스 1,800원 9개 MD추천상품 - 에너지바 2,000원 5개");
+                .isEqualToIgnoringWhitespace("- 콜라 1,000원 재고 없음 탄산2+1 - 콜라 1,000원 7개 - 사이다 1,000원 10개 탄산2+1 - 사이다 1,000원 10개 - 오렌지주스 1,800원 9개 MD추천상품 - 에너지바 2,000원 5개");
 
     }
 

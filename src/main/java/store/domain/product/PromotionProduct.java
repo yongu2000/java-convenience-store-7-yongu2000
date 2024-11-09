@@ -1,7 +1,5 @@
 package store.domain.product;
 
-import java.time.LocalDate;
-
 public class PromotionProduct extends Product{
     private final Promotion promotion;
 
@@ -14,12 +12,6 @@ public class PromotionProduct extends Product{
         super(product.name, product.price, quantity);
         this.promotion = product.promotion;
         product.removeQuantity(quantity);
-    }
-
-    @Override
-    public String toString() {
-        if (quantity > 0) return String.format("- %s %,d원 %s개 %s", name, price, quantity, promotion).trim();
-        return String.format("- %s %,d원 재고없음 %s", name, price, promotion).trim();
     }
 
     public int getAvailablePromotionQuantity() {
@@ -40,5 +32,11 @@ public class PromotionProduct extends Product{
 
     public boolean promotionIsApplicable() {
         return promotion.isApplicable();
+    }
+
+    @Override
+    public String toString() {
+        if (quantity > 0) return String.format("- %s %,d원 %s개 %s", name, price, quantity, promotion).trim();
+        return String.format("- %s %,d원 재고 없음 %s", name, price, promotion).trim();
     }
 }

@@ -19,7 +19,6 @@ public class OutputView {
     private static final String RECEIPT_MEMBERSHIP_DISCOUNT = "멤버십할인\t\t\t-%,d\n";
     private static final String RECEIPT_CUSTOMER_PRICE = "내실돈\t\t\t%,d\n";
 
-
     public void printStoreInformation(String products) {
         System.out.print(GREETING);
         System.out.print(STORE_PRODUCTS);

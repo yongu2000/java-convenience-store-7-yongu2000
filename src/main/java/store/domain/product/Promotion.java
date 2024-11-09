@@ -10,7 +10,7 @@ public class Promotion {
     private final int get;
     private final LocalDate startDate;
     private final LocalDate endDate;
-    private boolean applicable;
+    private final boolean applicable;
 
     private Promotion(String name, int buy, int get, LocalDate startDate, LocalDate endDate) {
         this.name = name;
@@ -23,11 +23,6 @@ public class Promotion {
 
     public static Promotion of(String name, int buy, int get, LocalDate startDate, LocalDate endDate) {
         return new Promotion(name, buy, get, startDate, endDate);
-    }
-
-    @Override
-    public String toString() {
-        return name;
     }
 
     public boolean checkAvailable(LocalDate orderDate) {
@@ -49,5 +44,10 @@ public class Promotion {
 
     public boolean isApplicable() {
         return applicable;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

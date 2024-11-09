@@ -1,8 +1,6 @@
 package store.service;
 
 import java.util.*;
-
-
 import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.order.Choice;
 import store.domain.product.CommonProduct;
@@ -33,7 +31,6 @@ public class ConvenienceStoreService {
         for (PromotionProduct promotionProduct : filterPromotionProducts(checkoutProducts)) {
             addAvailablePromotionProduct(availablePromotionProducts, promotionProduct);
         }
-
         return availablePromotionProducts;
     }
 
@@ -65,11 +62,9 @@ public class ConvenienceStoreService {
 
     public List<ProductDto> unavailablePromotionProducts(Products checkoutProducts) {
         List<ProductDto> unavailablePromotionProducts = new ArrayList<>();
-
         for (PromotionProduct promotionProduct : filterPromotionProducts(checkoutProducts)) {
             addUnavailablePromotionProduct(unavailablePromotionProducts, checkoutProducts, promotionProduct);
         }
-
         return unavailablePromotionProducts;
     }
 
@@ -79,7 +74,6 @@ public class ConvenienceStoreService {
         if (commonProduct == null) return;
         int unavailablePromotionQuantity = promotionProduct.getUnavailablePromotionQuantity();
         unavailablePromotionQuantity += commonProduct.getQuantity();
-
         unavailablePromotionProducts.add(ProductDto.of(promotionProduct.getName(), unavailablePromotionQuantity));
     }
 
@@ -103,7 +97,5 @@ public class ConvenienceStoreService {
         int unavailableCheckoutCommonProductQuantity = checkoutCommonProduct.getQuantity();
         checkoutProducts.removeCommonProduct(checkoutCommonProduct);
         convenienceCommonProduct.addQuantity(unavailableCheckoutCommonProductQuantity);
-
     }
-
 }

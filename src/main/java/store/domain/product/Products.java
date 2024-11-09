@@ -20,13 +20,6 @@ public class Products {
         products.stream().forEach(this.products::add);
     }
 
-    @Override
-    public String toString() {
-        return products.stream()
-            .map(Product::toString)
-            .collect(Collectors.joining("\n"));
-    }
-
     public Iterator<Product> findProductByName(String productName) {
         return products.stream()
                 .filter(product -> product.equals(productName))
@@ -51,6 +44,13 @@ public class Products {
 
     public Stream<Product> stream() {
         return products.stream();
+    }
+
+    @Override
+    public String toString() {
+        return products.stream()
+                .map(Product::toString)
+                .collect(Collectors.joining("\n"));
     }
 
     @Override

@@ -4,7 +4,6 @@ import store.domain.product.Product;
 import store.domain.product.Products;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Receipt {
     private final Products products;

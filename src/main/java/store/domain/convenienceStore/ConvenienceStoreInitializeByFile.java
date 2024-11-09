@@ -1,8 +1,6 @@
 package store.domain.convenienceStore;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -12,7 +10,6 @@ import store.domain.product.Product;
 import store.domain.product.Products;
 import store.domain.product.Promotion;
 import store.domain.product.PromotionProduct;
-import store.domain.product.Promotions;
 
 public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitialize {
 
@@ -21,19 +18,13 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
-    public Promotions promotions() {
-        List<Promotion> promotionsFromFile = loadPromotionsFromFile(PROMOTIONS_FILE_PATH);
-        return new Promotions(promotionsFromFile);
-    }
-
-    @Override
     public Products products() {
         List<Promotion> promotionsFromFile = loadPromotionsFromFile(PROMOTIONS_FILE_PATH);
         List<Product> productsFromFile = loadProductsFromFile(PRODUCTS_FILE_PATH, promotionsFromFile);
         return new Products(productsFromFile);
     }
 
-    private List<Promotion> loadPromotionsFromFile(String filePath) {
+        private List<Promotion> loadPromotionsFromFile(String filePath) {
         List<Promotion> promotions = new ArrayList<>();
         try (BufferedReader reader = openFile(filePath)) {
             reader.readLine(); // name,buy,get,start_date,end_date 스킵

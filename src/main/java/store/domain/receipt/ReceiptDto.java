@@ -14,7 +14,6 @@ public record ReceiptDto (
     int membershipDiscount,
     int customerPrice
 ) {
-
     public static ReceiptDto from(Receipt receipt){
         return new ReceiptDto(
             receipt.getProducts(),
@@ -24,7 +23,6 @@ public record ReceiptDto (
             receipt.getPromotionDiscount(),
             receipt.getMembershipDiscount(),
             receipt.getCustomerPrice()
-
         );
     }
 }

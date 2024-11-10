@@ -114,7 +114,7 @@ class ConvenienceStoreServiceTest {
         orderProducts.add(ProductDto.of("사이다", 5));
 
         convenienceStoreService.checkout(orderProducts);
-        List<ProductDto> productDtos = convenienceStoreService.availablePromotionProducts(convenienceStore.counter());
+        List<ProductDto> productDtos = convenienceStoreService.availablePromotionProducts();
 
         assertThat(productDtos).hasSize(2)
             .contains(ProductDto.of("콜라", 1), ProductDto.of("사이다", 1));
@@ -127,7 +127,7 @@ class ConvenienceStoreServiceTest {
         orderProducts.add(ProductDto.of("사이다", 10));
 
         convenienceStoreService.checkout(orderProducts);
-        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(convenienceStore.counter());
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts();
         assertThat(availablePromotionProducts).hasSize(0);
     }
 
@@ -138,9 +138,9 @@ class ConvenienceStoreServiceTest {
         orderProducts.add(ProductDto.of("사이다", 2));
 
         convenienceStoreService.checkout(orderProducts);
-        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(convenienceStore.counter());
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts();
         availablePromotionProducts.forEach(product -> {
-            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, convenienceStore.counter(), product.name(), product.quantity());
+            convenienceStoreService.addPromotionProductToCheckout(Choice.YES,product.name(), product.quantity());
         });
         assertThat(convenienceStore.toString())
                 .isEqualToIgnoringWhitespace("- 콜라 1,000원 7개 탄산2+1 - 콜라 1,000원 10개 - 사이다 1,000원 7개 탄산2+1 - 사이다 1,000원 10개 - 오렌지주스 1,800원 9개 MD추천상품 - 에너지바 2,000원 5개");
@@ -157,11 +157,11 @@ class ConvenienceStoreServiceTest {
         orderProducts.add(ProductDto.of("오렌지주스", 4));
 
         convenienceStoreService.checkout(orderProducts);
-        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(convenienceStore.counter());
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts();
         availablePromotionProducts.forEach(product-> {
-            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, convenienceStore.counter(), product.name(), product.quantity());
+            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, product.name(), product.quantity());
         });
-        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(convenienceStore.counter());
+        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts();
         assertThat(unavailablePromotionProducts).hasSize(2)
             .contains(ProductDto.of("콜라", 4), ProductDto.of("사이다", 6));
     }
@@ -174,13 +174,13 @@ class ConvenienceStoreServiceTest {
         orderProducts.add(ProductDto.of("오렌지주스", 4));
 
         convenienceStoreService.checkout(orderProducts);
-        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(convenienceStore.counter());
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts();
         availablePromotionProducts.forEach(product -> {
-            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, convenienceStore.counter(), product.name(), product.quantity());
+            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, product.name(), product.quantity());
         });
-        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(convenienceStore.counter());
+        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts();
         unavailablePromotionProducts.forEach(product -> {
-            convenienceStoreService.removeProductsFromCheckout(Choice.NO, convenienceStore.counter(), product.name());
+            convenienceStoreService.removeProductsFromCheckout(Choice.NO, product.name());
         });
 
         assertThat(convenienceStore.toString())

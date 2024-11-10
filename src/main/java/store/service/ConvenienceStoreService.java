@@ -5,7 +5,6 @@ import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.order.Choice;
 import store.domain.product.CommonProduct;
 import store.domain.product.ProductDto;
-import store.domain.product.Products;
 import store.domain.product.PromotionProduct;
 
 public class ConvenienceStoreService {
@@ -18,84 +17,85 @@ public class ConvenienceStoreService {
 
     public void checkout(List<ProductDto> orderProducts) {
         for (ProductDto orderProduct : orderProducts) {
-            takeProducts(convenienceStore.counter(), orderProduct.name(), orderProduct.quantity());
+            takeProducts(orderProduct.name(), orderProduct.quantity());
         }
     }
 
-    private void takeProducts(Products products, String productName, int quantity) {
-        products.add(convenienceStore.findProduct(productName, quantity));
+    private void takeProducts(String productName, int quantity) {
+        convenienceStore.counter()
+            .add(convenienceStore.findProduct(productName, quantity));
     }
 
-    public List<ProductDto> availablePromotionProducts(Products checkoutProducts) {
-        List<ProductDto> availablePromotionProducts = new ArrayList<>();
-        for (PromotionProduct promotionProduct : filterPromotionProducts(checkoutProducts)) {
-            addAvailablePromotionProduct(availablePromotionProducts, promotionProduct);
-        }
-        return availablePromotionProducts;
+    public List<ProductDto> availablePromotionProducts() {
+        return filterPromotionProducts().stream()
+            .filter(this::isAvailableForPromotion)
+            .map(product -> ProductDto.of(product.getName(), product.getAvailablePromotionQuantity()))
+            .toList();
     }
 
-    private List<PromotionProduct> filterPromotionProducts(Products checkoutProducts) {
-        return checkoutProducts.stream()
+    public List<ProductDto> unavailablePromotionProducts() {
+        return filterPromotionProducts().stream()
+            .map(this::isUnavailableForPromotion)
+            .filter(Objects::nonNull)
+            .toList();
+    }
+
+    private boolean isAvailableForPromotion(PromotionProduct promotionProduct) {
+        int availablePromotionQuantity = promotionProduct.getAvailablePromotionQuantity();
+        PromotionProduct storeProduct = convenienceStore.counter().findPromotionProductByName(promotionProduct.getName());
+        return promotionAvailable(storeProduct, availablePromotionQuantity);
+    }
+
+    private boolean promotionAvailable(PromotionProduct storeProduct, int availablePromotionQuantity) {
+        return storeProduct != null && storeProduct.getQuantity() > 0
+            && storeProduct.getQuantity() >= availablePromotionQuantity && availablePromotionQuantity > 0;
+    }
+
+    private ProductDto isUnavailableForPromotion(PromotionProduct promotionProduct) {
+        CommonProduct commonProduct = convenienceStore.counter().findCommonProductByName(promotionProduct.getName());
+        if (commonProduct == null) return null;
+        int unavailablePromotionQuantity = promotionProduct.getUnavailablePromotionQuantity();
+        unavailablePromotionQuantity += commonProduct.getQuantity();
+        return ProductDto.of(promotionProduct.getName(), unavailablePromotionQuantity);
+    }
+
+    private List<PromotionProduct> filterPromotionProducts() {
+        return convenienceStore.counter()
+            .stream()
             .filter(PromotionProduct.class::isInstance)
             .map(PromotionProduct.class::cast)
             .filter(PromotionProduct::promotionIsApplicable)
             .toList();
     }
 
-    private void addAvailablePromotionProduct(List<ProductDto> availablePromotionProducts, PromotionProduct promotionProduct) {
-        int availablePromotionQuantity = promotionProduct.getAvailablePromotionQuantity();
-        PromotionProduct storeProduct = convenienceStore.findPromotionProductByName(promotionProduct.getName());
-
-        if (storeProduct != null && storeProduct.getQuantity() > 0 && storeProduct.getQuantity() >= availablePromotionQuantity && availablePromotionQuantity > 0) {
-            availablePromotionProducts.add(ProductDto.of(promotionProduct.getName(), availablePromotionQuantity));
-        }
-    }
-
-    public void addPromotionProductToCheckout(Choice choice, Products checkoutProducts, String product, int value) {
+    public void addPromotionProductToCheckout(Choice choice, String product, int value) {
         if (choice.equals(Choice.NO)) return;
-        PromotionProduct promotionProduct = checkoutProducts.findPromotionProductByName(product);
+        PromotionProduct promotionProduct = convenienceStore.counter().findPromotionProductByName(product);
         PromotionProduct conveniencePromotionProduct = convenienceStore.findPromotionProductByName(product);
 
         conveniencePromotionProduct.removeQuantity(value);
         promotionProduct.addQuantity(value);
     }
 
-    public List<ProductDto> unavailablePromotionProducts(Products checkoutProducts) {
-        List<ProductDto> unavailablePromotionProducts = new ArrayList<>();
-        for (PromotionProduct promotionProduct : filterPromotionProducts(checkoutProducts)) {
-            addUnavailablePromotionProduct(unavailablePromotionProducts, checkoutProducts, promotionProduct);
-        }
-        return unavailablePromotionProducts;
-    }
-
-    private void addUnavailablePromotionProduct(List<ProductDto> unavailablePromotionProducts, Products checkoutProducts,
-        PromotionProduct promotionProduct) {
-        CommonProduct commonProduct = checkoutProducts.findCommonProductByName(promotionProduct.getName());
-        if (commonProduct == null) return;
-        int unavailablePromotionQuantity = promotionProduct.getUnavailablePromotionQuantity();
-        unavailablePromotionQuantity += commonProduct.getQuantity();
-        unavailablePromotionProducts.add(ProductDto.of(promotionProduct.getName(), unavailablePromotionQuantity));
-    }
-
-    public void removeProductsFromCheckout(Choice choice, Products checkoutProducts, String product) {
+    public void removeProductsFromCheckout(Choice choice,String product) {
         if (choice.equals(Choice.YES)) return;
-        removePromotionProductFromCheckout(checkoutProducts, product);
-        removeCommonProductFromCheckout(checkoutProducts, product);
+        removePromotionProductFromCheckout(product);
+        removeCommonProductFromCheckout(product);
     }
 
-    private void removePromotionProductFromCheckout(Products checkoutProducts, String product) {
-        PromotionProduct checkoutPromotionProduct = checkoutProducts.findPromotionProductByName(product);
+    private void removePromotionProductFromCheckout(String product) {
+        PromotionProduct checkoutPromotionProduct = convenienceStore.counter().findPromotionProductByName(product);
         PromotionProduct conveniencePromotionProduct = convenienceStore.findPromotionProductByName(product);
         int unavailableCheckoutPromotionProductQuantity = checkoutPromotionProduct.getUnavailablePromotionQuantity();
         checkoutPromotionProduct.removeQuantity(unavailableCheckoutPromotionProductQuantity);
         conveniencePromotionProduct.addQuantity(unavailableCheckoutPromotionProductQuantity);
     }
 
-    private void removeCommonProductFromCheckout(Products checkoutProducts, String product) {
-        CommonProduct checkoutCommonProduct = checkoutProducts.findCommonProductByName(product);
+    private void removeCommonProductFromCheckout(String product) {
+        CommonProduct checkoutCommonProduct = convenienceStore.counter().findCommonProductByName(product);
         CommonProduct convenienceCommonProduct = convenienceStore.findCommonProductByName(product);
         int unavailableCheckoutCommonProductQuantity = checkoutCommonProduct.getQuantity();
-        checkoutProducts.removeCommonProduct(checkoutCommonProduct);
+        convenienceStore.counter().removeCommonProduct(checkoutCommonProduct);
         convenienceCommonProduct.addQuantity(unavailableCheckoutCommonProductQuantity);
     }
 }

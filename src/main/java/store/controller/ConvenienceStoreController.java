@@ -52,17 +52,15 @@ public class ConvenienceStoreController {
     }
 
     public void promotionApplicable() {
-        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts(convenienceStore.counter());
+        List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts();
         availablePromotionProducts.forEach(product -> convenienceStoreService.addPromotionProductToCheckout(executeWithRetry(() -> inputView.readAddPromotionChoice(product)),
-                convenienceStore.counter(),
                 product.name(),
                 product.quantity()));
     }
 
     public void promotionNotApplicable() {
-        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts(convenienceStore.counter());
+        List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts();
         unavailablePromotionProducts.forEach(product -> convenienceStoreService.removeProductsFromCheckout(executeWithRetry(() -> inputView.readRemovePromotionChoice(product)),
-                convenienceStore.counter(),
                 product.name()));
     }
 

@@ -20,10 +20,23 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
 
     private static final String PROMOTIONS_FILE_PATH = "src/main/resources/promotions.md";
     private static final String PRODUCTS_FILE_PATH = "src/main/resources/products.md";
+
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     private static final String DELIMITER = ",";
     private static final String NO_PROMOTION = "null";
 
+    private static final int PROMOTION_NAME = 0;
+    private static final int PROMOTION_BUY = 1;
+    private static final int PROMOTION_GET = 2;
+    private static final int PROMOTION_START_DATE = 3;
+    private static final int PROMOTION_END_DATE = 4;
+
+    private static final int PRODUCT_NAME = 0;
+    private static final int PRODUCT_PRICE = 1;
+    private static final int PRODUCT_QUANTITY = 2;
+    private static final int PRODUCT_PROMOTION = 3;
+    
     @Override
     public Products products() {
         List<Promotion> promotionsFromFile = loadPromotionsFromFile();
@@ -73,22 +86,23 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
     }
 
     private Promotion parsePromotion(String promotionString) {
-        String[] split = promotionString.split(DELIMITER);
+        String[] promotion = promotionString.split(DELIMITER);
         return Promotion.of(
-            split[0],
-            Integer.parseInt(split[1]),
-            Integer.parseInt(split[2]),
-            LocalDate.parse(split[3], DATE_FORMATTER),
-            LocalDate.parse(split[4], DATE_FORMATTER)
+            promotion[PROMOTION_NAME],
+            Integer.parseInt(promotion[PROMOTION_BUY]),
+            Integer.parseInt(promotion[PROMOTION_GET]),
+            LocalDate.parse(promotion[PROMOTION_START_DATE], DATE_FORMATTER),
+            LocalDate.parse(promotion[PROMOTION_END_DATE], DATE_FORMATTER)
         );
     }
 
     private Product parseProduct(String line, List<Promotion> promotions) {
-        String[] split = line.split(DELIMITER);
-        String name = split[0];
-        int price = Integer.parseInt(split[1]);
-        int quantity = Integer.parseInt(split[2]);
-        return createProduct(name, price, quantity, split[3], promotions);
+        String[] product = line.split(DELIMITER);
+        return createProduct(product[PRODUCT_NAME],
+            Integer.parseInt(product[PRODUCT_PRICE]),
+            Integer.parseInt(product[PRODUCT_QUANTITY]),
+            product[PRODUCT_PROMOTION],
+            promotions);
     }
 
     private Product createProduct(String name, int price, int quantity, String promotionString,

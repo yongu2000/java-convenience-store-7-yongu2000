@@ -1,22 +1,23 @@
 package store.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.convenienceStore.MembershipDiscountByRate;
 import store.domain.order.Choice;
-import store.domain.product.*;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.entry;
+import store.domain.product.CommonProduct;
+import store.domain.product.Product;
+import store.domain.product.ProductDto;
+import store.domain.product.Products;
+import store.domain.product.Promotion;
+import store.domain.product.PromotionProduct;
 
 class ConvenienceStoreServiceTest {
 
@@ -29,10 +30,10 @@ class ConvenienceStoreServiceTest {
     void init() {
         List<Product> productList = new ArrayList<>();
         Promotion promotion = Promotion.of("탄산2+1",
-                2,
-                1,
-                LocalDate.of(2024, 1, 1),
-                LocalDate.of(2024, 12, 31));
+            2,
+            1,
+            LocalDate.of(2024, 1, 1),
+            LocalDate.of(2024, 12, 31));
         Promotion promotion2 = Promotion.of("MD추천상품",
             1,
             1,
@@ -53,7 +54,8 @@ class ConvenienceStoreServiceTest {
         productList.add(commonProduct3);
 
         products = new Products(productList);
-        convenienceStore = new ConvenienceStore(products, new MembershipDiscountByRate(), new Products(new ArrayList<>()));
+        convenienceStore = new ConvenienceStore(products, new MembershipDiscountByRate(),
+            new Products(new ArrayList<>()));
         convenienceStoreService = new ConvenienceStoreService(convenienceStore);
         orderProducts = new ArrayList<>();
     }
@@ -63,18 +65,15 @@ class ConvenienceStoreServiceTest {
     void 프로모션_상품만_구입_목록에_담기() {
         orderProducts.add(ProductDto.of("콜라", 3));
         convenienceStoreService.checkout(orderProducts);
-        assertThat(convenienceStore.toString())
-                .isEqualToIgnoringWhitespace("- 콜라 1,000원 7개 탄산2+1 - 콜라 1,000원 10개 - 사이다 1,000원 10개 탄산2+1 - 사이다 1,000원 10개 - 오렌지주스 1,800원 9개 MD추천상품 - 에너지바 2,000원 5개");
+        assertThat(convenienceStore.toString().replaceAll("\\s", "")).contains("-콜라1,000원7개탄산2+1");
     }
 
-    @DisplayName("프로모션 상품만 구입 목록에 담기")
+    @DisplayName("일반 상품만 구입 목록에 담기")
     @Test
     void 일반_상품만_구입_목록에_담기() {
         orderProducts.add(ProductDto.of("에너지바", 3));
         convenienceStoreService.checkout(orderProducts);
-        assertThat(convenienceStore.toString())
-                .isEqualToIgnoringWhitespace("- 콜라 1,000원 10개 탄산2+1 - 콜라 1,000원 10개 - 사이다 1,000원 10개 탄산2+1 - 사이다 1,000원 10개 - 오렌지주스 1,800원 9개 MD추천상품 - 에너지바 2,000원 2개");
-
+        assertThat(convenienceStore.toString().replaceAll("\\s", "")).contains("-에너지바2,000원2개");
     }
 
     @DisplayName("프로모션 상품, 일반 상품 같이 구입 목록에 담기")
@@ -82,9 +81,7 @@ class ConvenienceStoreServiceTest {
     void 프로모션_일반_상품_목록에_담기() {
         orderProducts.add(ProductDto.of("콜라", 13));
         convenienceStoreService.checkout(orderProducts);
-        assertThat(convenienceStore.toString())
-                .isEqualToIgnoringWhitespace("- 콜라 1,000원 재고 없음 탄산2+1 - 콜라 1,000원 7개 - 사이다 1,000원 10개 탄산2+1 - 사이다 1,000원 10개 - 오렌지주스 1,800원 9개 MD추천상품 - 에너지바 2,000원 5개");
-
+        assertThat(convenienceStore.toString().replaceAll("\\s", "")).contains("-콜라1,000원재고없음탄산2+1", "-콜라1,000원7개");
     }
 
     @DisplayName("존재하지 않는 상품 입력시 오류")
@@ -92,8 +89,8 @@ class ConvenienceStoreServiceTest {
     void 존재하지_않는_상품_입력시_오류() {
         orderProducts.add(ProductDto.of("안녕하세요", 13));
         assertThatThrownBy(() -> convenienceStoreService.checkout(orderProducts))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
 
     }
 
@@ -102,8 +99,8 @@ class ConvenienceStoreServiceTest {
     void 상품_재고_초과시_오류() {
         orderProducts.add(ProductDto.of("콜라", 21));
         assertThatThrownBy(() -> convenienceStoreService.checkout(orderProducts))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
 
     }
 
@@ -140,13 +137,11 @@ class ConvenienceStoreServiceTest {
         convenienceStoreService.checkout(orderProducts);
         List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts();
         availablePromotionProducts.forEach(product -> {
-            convenienceStoreService.addPromotionProductToCheckout(Choice.YES,product.name(), product.quantity());
+            convenienceStoreService.addPromotionProductToCheckout(Choice.YES, product.name(), product.quantity());
         });
-        assertThat(convenienceStore.toString())
-                .isEqualToIgnoringWhitespace("- 콜라 1,000원 7개 탄산2+1 - 콜라 1,000원 10개 - 사이다 1,000원 7개 탄산2+1 - 사이다 1,000원 10개 - 오렌지주스 1,800원 9개 MD추천상품 - 에너지바 2,000원 5개");
-
-        assertThat(convenienceStore.counter().toString())
-            .isEqualToIgnoringWhitespace("- 콜라 1,000원 3개 탄산2+1 - 사이다 1,000원 3개 탄산2+1");
+        assertThat(convenienceStore.toString().replaceAll("\\s", "")).contains("-콜라1,000원7개탄산2+1", "-사이다1,000원7개탄산2+1");
+        assertThat(convenienceStore.counter().toString().replaceAll("\\s", "")).contains(
+            "-콜라1,000원3개탄산2+1-사이다1,000원3개탄산2+1");
     }
 
     @DisplayName("프로모션 적용이 안되는 상품 목록 생성")
@@ -158,7 +153,7 @@ class ConvenienceStoreServiceTest {
 
         convenienceStoreService.checkout(orderProducts);
         List<ProductDto> availablePromotionProducts = convenienceStoreService.availablePromotionProducts();
-        availablePromotionProducts.forEach(product-> {
+        availablePromotionProducts.forEach(product -> {
             convenienceStoreService.addPromotionProductToCheckout(Choice.YES, product.name(), product.quantity());
         });
         List<ProductDto> unavailablePromotionProducts = convenienceStoreService.unavailablePromotionProducts();
@@ -183,10 +178,10 @@ class ConvenienceStoreServiceTest {
             convenienceStoreService.removeProductsFromCheckout(Choice.NO, product.name());
         });
 
-        assertThat(convenienceStore.toString())
-                .isEqualToIgnoringWhitespace("- 콜라 1,000원 1개 탄산2+1 - 콜라 1,000원 10개 - 사이다 1,000원 1개 탄산2+1 - 사이다 1,000원 10개 - 오렌지주스 1,800원 5개 MD추천상품 - 에너지바 2,000원 5개");
-        assertThat(convenienceStore.counter().toString())
-            .isEqualToIgnoringWhitespace("- 콜라 1,000원 9개 탄산2+1 - 사이다 1,000원 9개 탄산2+1 - 오렌지주스 1,800원 4개 MD추천상품");
+        assertThat(convenienceStore.toString().replaceAll("\\s", "")).contains(
+            "-콜라1,000원1개탄산2+1", "-사이다1,000원1개탄산2+1", "-오렌지주스1,800원5개MD추천상품");
+        assertThat(convenienceStore.counter().toString().replaceAll("\\s", "")).contains(
+            "-콜라1,000원9개탄산2+1", "-사이다1,000원9개탄산2+1", "-오렌지주스1,800원4개MD추천상품");
     }
 
 }

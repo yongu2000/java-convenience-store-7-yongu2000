@@ -74,7 +74,7 @@ public class ConvenienceStoreController {
     }
 
     public void receipt(Order order) {
-        Receipt receipt = new Receipt(order.getReceiptTotal(),
+        Receipt receipt = Receipt.of(order.getReceiptTotal(),
             order.getReceiptPromotion(),
             order.getMembershipDiscountPrice(convenienceStore.getMembershipDiscount()));
         ReceiptDto receiptDto = ReceiptDto.from(receipt);

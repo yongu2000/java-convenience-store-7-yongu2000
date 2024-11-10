@@ -11,10 +11,14 @@ public class Receipt {
     private final Products promotionProducts;
     private final int membershipDiscount;
 
-    public Receipt(Products products, Products promotionProducts, int membershipDiscount) {
+    private Receipt(Products products, Products promotionProducts, int membershipDiscount) {
         this.products = products;
         this.promotionProducts = promotionProducts;
         this.membershipDiscount = membershipDiscount;
+    }
+
+    public static Receipt of(Products products, Products promotionProducts, int membershipDiscount) {
+        return new Receipt(products, promotionProducts, membershipDiscount);
     }
 
     public List<ProductDto> getProducts() {

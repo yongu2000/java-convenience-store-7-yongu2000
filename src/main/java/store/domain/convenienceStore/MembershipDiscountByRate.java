@@ -7,13 +7,15 @@ import store.domain.product.PromotionProduct;
 public class MembershipDiscountByRate implements MembershipDiscount{
 
     private static final double DISCOUNT_RATE = 0.3;
+    private static final int MAX_DISCOUNT_PRICE = 8_000;
 
     @Override
     public int getDiscountPrice(Products purchasedProducts) {
         int promotionProductPrice = getMembershipDiscountIncludedPromotionProductPrice(purchasedProducts);
         int commonProductPrice = getMembershipDiscountIncludedCommonProductPrice(purchasedProducts);
         int totalMembershipDiscountPrice = promotionProductPrice + commonProductPrice;
-        return (int) Math.round(totalMembershipDiscountPrice * DISCOUNT_RATE);
+        int discountPrice = (int) Math.round(totalMembershipDiscountPrice * DISCOUNT_RATE);
+        return Math.min(discountPrice, MAX_DISCOUNT_PRICE);
     }
 
     private int getMembershipDiscountIncludedPromotionProductPrice(Products purchasedProducts) {

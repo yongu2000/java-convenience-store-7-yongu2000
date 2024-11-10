@@ -66,7 +66,7 @@ public class ConvenienceStoreService {
     private List<PromotionProduct> filterPromotionProducts() {
         return convenienceStore.counter()
             .stream()
-            .filter(PromotionProduct.class::isInstance)
+            .filter(product -> product instanceof PromotionProduct)
             .map(PromotionProduct.class::cast)
             .filter(PromotionProduct::promotionIsApplicable)
             .toList();

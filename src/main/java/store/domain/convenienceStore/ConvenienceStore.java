@@ -66,6 +66,7 @@ public class ConvenienceStore {
     }
 
     private Product createProductsWithQuantity(Product product, int quantity) {
+        
         if (product instanceof PromotionProduct) {
             return new PromotionProduct((PromotionProduct) product, quantity);
         }

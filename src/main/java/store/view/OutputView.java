@@ -37,14 +37,15 @@ public class OutputView {
     private void printReceiptProducts(ReceiptDto receiptDto) {
         System.out.print(RECEIPT_PRODUCTS_START);
         receiptDto.products()
-                .forEach(product -> System.out.printf(RECEIPT_PRODUCT, product.name(), product.quantity(), product.price()));
+            .forEach(
+                product -> System.out.printf(RECEIPT_PRODUCT, product.name(), product.quantity(), product.price()));
     }
 
     private void printReceiptPromotionProducts(ReceiptDto receiptDto) {
         System.out.print(RECEIPT_PROMOTION_PRODUCTS_START);
         receiptDto.promotionProducts()
-                .forEach(product -> System.out.printf(RECEIPT_PROMOTION_PRODUCT, product.name(), product.quantity())
-        );
+            .forEach(product -> System.out.printf(RECEIPT_PROMOTION_PRODUCT, product.name(), product.quantity())
+            );
     }
 
     private void printReceiptPrices(ReceiptDto receiptDto) {

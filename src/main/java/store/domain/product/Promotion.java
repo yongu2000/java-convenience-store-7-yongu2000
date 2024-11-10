@@ -1,10 +1,10 @@
 package store.domain.product;
 
 import camp.nextstep.edu.missionutils.DateTimes;
-
 import java.time.LocalDate;
 
 public class Promotion {
+
     private final String name;
     private final int buy;
     private final int get;
@@ -34,16 +34,18 @@ public class Promotion {
     }
 
     public int getAvailablePromotionQuantity(int quantity) {
-        if (quantity % (buy+get) >= buy) return (buy+get) - quantity % (buy+get);
+        if (quantity % (buy + get) >= buy) {
+            return (buy + get) - quantity % (buy + get);
+        }
         return 0;
     }
 
     public int getUnavailablePromotionQuantity(int orderProductQuantity) {
-        return orderProductQuantity % (buy+get);
+        return orderProductQuantity % (buy + get);
     }
 
     public int getAppliedPromotionQuantity(int quantity) {
-        return quantity / (buy+get) * get;
+        return quantity / (buy + get) * get;
     }
 
     @Override

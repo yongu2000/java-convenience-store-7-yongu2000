@@ -4,11 +4,15 @@ import static store.view.ErrorMessage.NOT_ENOUGH_STOCK;
 import static store.view.ErrorMessage.PRODUCT_NOT_EXISTS;
 import static store.view.ErrorMessage.UNKNOWN_PRODUCT_TYPE;
 
-import store.domain.product.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import store.domain.product.CommonProduct;
+import store.domain.product.Product;
+import store.domain.product.Products;
+import store.domain.product.PromotionProduct;
 
 public class ConvenienceStore {
+
     private final Products products;
     private final MembershipDiscount membershipDiscount;
     private Products counter;
@@ -74,14 +78,16 @@ public class ConvenienceStore {
 
     private void checkProductExistence(String productName) {
         boolean exists = products.stream().anyMatch(product -> product.equals(productName));
-        if (!exists) throw new IllegalArgumentException(PRODUCT_NOT_EXISTS.getMessage());
+        if (!exists) {
+            throw new IllegalArgumentException(PRODUCT_NOT_EXISTS.getMessage());
+        }
     }
 
     private void checkProductQuantity(String productName, int quantity) {
         int totalQuantity = products.stream()
-                .filter(product -> product.equals(productName))
-                .mapToInt(Product::getQuantity)
-                .sum();
+            .filter(product -> product.equals(productName))
+            .mapToInt(Product::getQuantity)
+            .sum();
         if (totalQuantity < quantity) {
             throw new IllegalArgumentException(NOT_ENOUGH_STOCK.getMessage());
         }

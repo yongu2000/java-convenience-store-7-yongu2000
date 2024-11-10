@@ -1,6 +1,7 @@
 package store.domain.product;
 
-public class PromotionProduct extends Product{
+public class PromotionProduct extends Product {
+
     private final Promotion promotion;
 
     public PromotionProduct(String name, int price, int quantity, Promotion promotion) {
@@ -36,7 +37,9 @@ public class PromotionProduct extends Product{
 
     @Override
     public String toString() {
-        if (quantity > 0) return String.format("- %s %,d원 %s개 %s", name, price, quantity, promotion).trim();
+        if (quantity > 0) {
+            return String.format("- %s %,d원 %s개 %s", name, price, quantity, promotion).trim();
+        }
         return String.format("- %s %,d원 재고 없음 %s", name, price, promotion).trim();
     }
 }

@@ -1,7 +1,9 @@
 package store.domain.order;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import store.domain.convenienceStore.MembershipDiscount;
 import store.domain.product.Product;
 import store.domain.product.Products;
@@ -27,7 +29,8 @@ public class Order {
         Map<String, Integer> totalProductsQuantity = createTotalProductQuantityData();
         List<Product> products = new ArrayList<>();
         totalProductsPrice.keySet().forEach(productName -> {
-            products.add(new ReceiptProduct(productName, totalProductsPrice.get(productName), totalProductsQuantity.get(productName)));
+            products.add(new ReceiptProduct(productName, totalProductsPrice.get(productName),
+                totalProductsQuantity.get(productName)));
         });
         return new Products(products);
     }
@@ -35,7 +38,7 @@ public class Order {
     private Map<String, Integer> createTotalProductPriceData() {
         Map<String, Integer> totalProductsPrice = new LinkedHashMap<>();
         purchasedProducts.stream().forEach(product ->
-                totalProductsPrice.merge(product.getName(), product.getPrice() * product.getQuantity(), Integer::sum)
+            totalProductsPrice.merge(product.getName(), product.getPrice() * product.getQuantity(), Integer::sum)
         );
         return totalProductsPrice;
     }
@@ -43,7 +46,7 @@ public class Order {
     private Map<String, Integer> createTotalProductQuantityData() {
         Map<String, Integer> totalProductsQuantity = new LinkedHashMap<>();
         purchasedProducts.stream().forEach(product ->
-                totalProductsQuantity.merge(product.getName(), product.getQuantity(), Integer::sum)
+            totalProductsQuantity.merge(product.getName(), product.getQuantity(), Integer::sum)
         );
         return totalProductsQuantity;
     }
@@ -51,15 +54,19 @@ public class Order {
     public Products getReceiptPromotion() {
         List<Product> products = new ArrayList<>();
         purchasedProducts.stream()
-                .filter(product -> product instanceof PromotionProduct)
-                .map(PromotionProduct.class::cast)
-                .filter(PromotionProduct::promotionIsApplicable)
-                .forEach(product -> products.add(new ReceiptProduct(product.getName(), product.getPrice() * product.getPromotionDiscountQuantity(), product.getPromotionDiscountQuantity())));
+            .filter(product -> product instanceof PromotionProduct)
+            .map(PromotionProduct.class::cast)
+            .filter(PromotionProduct::promotionIsApplicable)
+            .forEach(product -> products.add(
+                new ReceiptProduct(product.getName(), product.getPrice() * product.getPromotionDiscountQuantity(),
+                    product.getPromotionDiscountQuantity())));
         return new Products(products);
     }
 
     public int getMembershipDiscountPrice(MembershipDiscount membershipDiscount) {
-        if (membershipDiscountStatus.equals(Choice.YES)) return membershipDiscount.getDiscountPrice(purchasedProducts);
+        if (membershipDiscountStatus.equals(Choice.YES)) {
+            return membershipDiscount.getDiscountPrice(purchasedProducts);
+        }
         return 0;
     }
 }

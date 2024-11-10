@@ -1,6 +1,7 @@
 package store.service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.order.Choice;
 import store.domain.product.CommonProduct;
@@ -42,7 +43,8 @@ public class ConvenienceStoreService {
 
     private boolean isAvailableForPromotion(PromotionProduct promotionProduct) {
         int availablePromotionQuantity = promotionProduct.getAvailablePromotionQuantity();
-        PromotionProduct storeProduct = convenienceStore.counter().findPromotionProductByName(promotionProduct.getName());
+        PromotionProduct storeProduct = convenienceStore.counter()
+            .findPromotionProductByName(promotionProduct.getName());
         return promotionAvailable(storeProduct, availablePromotionQuantity);
     }
 
@@ -53,7 +55,9 @@ public class ConvenienceStoreService {
 
     private ProductDto isUnavailableForPromotion(PromotionProduct promotionProduct) {
         CommonProduct commonProduct = convenienceStore.counter().findCommonProductByName(promotionProduct.getName());
-        if (commonProduct == null) return null;
+        if (commonProduct == null) {
+            return null;
+        }
         int unavailablePromotionQuantity = promotionProduct.getUnavailablePromotionQuantity();
         unavailablePromotionQuantity += commonProduct.getQuantity();
         return ProductDto.of(promotionProduct.getName(), unavailablePromotionQuantity);
@@ -69,7 +73,9 @@ public class ConvenienceStoreService {
     }
 
     public void addPromotionProductToCheckout(Choice choice, String product, int value) {
-        if (choice.equals(Choice.NO)) return;
+        if (choice.equals(Choice.NO)) {
+            return;
+        }
         PromotionProduct promotionProduct = convenienceStore.counter().findPromotionProductByName(product);
         PromotionProduct conveniencePromotionProduct = convenienceStore.findPromotionProductByName(product);
 
@@ -77,8 +83,10 @@ public class ConvenienceStoreService {
         promotionProduct.addQuantity(value);
     }
 
-    public void removeProductsFromCheckout(Choice choice,String product) {
-        if (choice.equals(Choice.YES)) return;
+    public void removeProductsFromCheckout(Choice choice, String product) {
+        if (choice.equals(Choice.YES)) {
+            return;
+        }
         removePromotionProductFromCheckout(product);
         removeCommonProductFromCheckout(product);
     }

@@ -1,8 +1,11 @@
 package store.domain.convenienceStore;
 
-import static store.view.ErrorMessage.*;
+import static store.view.ErrorMessage.CANNOT_FIND_PROMOTION;
+import static store.view.ErrorMessage.CANNOT_READ_FILE;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -72,11 +75,11 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
     private Promotion parsePromotion(String promotionString) {
         String[] split = promotionString.split(DELIMITER);
         return Promotion.of(
-                split[0],
-                Integer.parseInt(split[1]),
-                Integer.parseInt(split[2]),
-                LocalDate.parse(split[3], DATE_FORMATTER),
-                LocalDate.parse(split[4], DATE_FORMATTER)
+            split[0],
+            Integer.parseInt(split[1]),
+            Integer.parseInt(split[2]),
+            LocalDate.parse(split[3], DATE_FORMATTER),
+            LocalDate.parse(split[4], DATE_FORMATTER)
         );
     }
 
@@ -88,7 +91,8 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
         return createProduct(name, price, quantity, split[3], promotions);
     }
 
-    private Product createProduct(String name, int price, int quantity, String promotionString, List<Promotion> promotions) {
+    private Product createProduct(String name, int price, int quantity, String promotionString,
+        List<Promotion> promotions) {
         if (promotionString.equals(NO_PROMOTION)) {
             return new CommonProduct(name, price, quantity);
         }
@@ -98,9 +102,9 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
 
     private Promotion findPromotion(String promotionString, List<Promotion> promotions) {
         return promotions.stream()
-                .filter(promotion -> promotion.toString().equals(promotionString))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(CANNOT_FIND_PROMOTION.getMessage()));
+            .filter(promotion -> promotion.toString().equals(promotionString))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException(CANNOT_FIND_PROMOTION.getMessage()));
     }
 
     private List<Product> makeCommonProduct(List<Product> productsFromFile) {

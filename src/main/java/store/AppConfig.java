@@ -1,5 +1,6 @@
 package store;
 
+import java.util.ArrayList;
 import store.controller.ConvenienceStoreController;
 import store.domain.convenienceStore.ConvenienceStore;
 import store.domain.convenienceStore.ConvenienceStoreInitializeByFile;
@@ -9,8 +10,6 @@ import store.service.ConvenienceStoreService;
 import store.view.InputView;
 import store.view.OutputView;
 
-import java.util.ArrayList;
-
 public class AppConfig {
 
     private ConvenienceStore convenienceStore;
@@ -19,14 +18,15 @@ public class AppConfig {
 
     public ConvenienceStore convenienceStore() {
         if (convenienceStore == null) {
-            convenienceStore = new ConvenienceStore(new ConvenienceStoreInitializeByFile().products(), new MembershipDiscountByRate(), new Products(new ArrayList<>()));
+            convenienceStore = new ConvenienceStore(new ConvenienceStoreInitializeByFile().products(),
+                new MembershipDiscountByRate(), new Products(new ArrayList<>()));
             return convenienceStore;
         }
         return convenienceStore;
     }
 
     public ConvenienceStoreService convenienceStoreService() {
-        if(convenienceStoreService == null) {
+        if (convenienceStoreService == null) {
             convenienceStoreService = new ConvenienceStoreService(convenienceStore());
             return convenienceStoreService;
         }
@@ -35,7 +35,8 @@ public class AppConfig {
 
     public ConvenienceStoreController convenienceStoreController() {
         if (convenienceStoreController == null) {
-            convenienceStoreController = new ConvenienceStoreController(convenienceStore(), convenienceStoreService(), new InputView(), new OutputView());
+            convenienceStoreController = new ConvenienceStoreController(convenienceStore(), convenienceStoreService(),
+                new InputView(), new OutputView());
             return convenienceStoreController;
         }
         return convenienceStoreController;

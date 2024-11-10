@@ -1,9 +1,8 @@
 package store.domain.order;
 
-import static store.view.ErrorMessage.*;
+import static store.view.ErrorMessage.INVALID_CHOICE_FORMAT;
 
 import java.util.Arrays;
-import store.view.ErrorMessage;
 
 public enum Choice {
     YES("Y"),
@@ -17,8 +16,8 @@ public enum Choice {
 
     public static Choice ofString(String input) {
         return Arrays.stream(Choice.values())
-                .filter(choice -> input.equals(choice.value))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(INVALID_CHOICE_FORMAT.getMessage()));
+            .filter(choice -> input.equals(choice.value))
+            .findAny()
+            .orElseThrow(() -> new IllegalArgumentException(INVALID_CHOICE_FORMAT.getMessage()));
     }
 }

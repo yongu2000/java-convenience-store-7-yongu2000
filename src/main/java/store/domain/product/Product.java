@@ -28,7 +28,7 @@ public abstract class Product {
 
     public void addQuantity(int value) {
         quantity += value;
-    };
+    }
 
     public void removeQuantity(int value) {
         quantity -= value;
@@ -40,14 +40,20 @@ public abstract class Product {
 
     @Override
     public String toString() {
-        if (quantity > 0) return String.format("- %s %,d원 %s개", name, price, quantity).trim();
+        if (quantity > 0) {
+            return String.format("- %s %,d원 %s개", name, price, quantity).trim();
+        }
         return String.format("- %s %,d원 재고 없음", name, price).trim();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Product product = (Product) o;
         return price == product.price && Objects.equals(name, product.name);
     }

@@ -1,10 +1,9 @@
 package store.domain.receipt;
 
+import java.util.List;
 import store.domain.product.ProductDto;
 
-import java.util.List;
-
-public record ReceiptDto (
+public record ReceiptDto(
     List<ProductDto> products,
     List<ProductDto> promotionProducts,
     int totalQuantity,
@@ -13,7 +12,8 @@ public record ReceiptDto (
     int membershipDiscount,
     int customerPrice
 ) {
-    public static ReceiptDto from(Receipt receipt){
+
+    public static ReceiptDto from(Receipt receipt) {
         return new ReceiptDto(
             receipt.getProducts(),
             receipt.getPromotionProducts(),

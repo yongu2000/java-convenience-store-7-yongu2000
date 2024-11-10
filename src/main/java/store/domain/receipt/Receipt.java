@@ -1,12 +1,12 @@
 package store.domain.receipt;
 
+import java.util.List;
 import store.domain.product.Product;
 import store.domain.product.ProductDto;
 import store.domain.product.Products;
 
-import java.util.List;
-
 public class Receipt {
+
     private final Products products;
     private final Products promotionProducts;
     private final int membershipDiscount;
@@ -18,11 +18,13 @@ public class Receipt {
     }
 
     public List<ProductDto> getProducts() {
-        return products.stream().map(product -> ProductDto.of(product.getName(), product.getPrice(), product.getQuantity())).toList();
+        return products.stream()
+            .map(product -> ProductDto.of(product.getName(), product.getPrice(), product.getQuantity())).toList();
     }
 
     public List<ProductDto> getPromotionProducts() {
-        return promotionProducts.stream().map(product -> ProductDto.of(product.getName(), product.getPrice(), product.getQuantity())).toList();
+        return promotionProducts.stream()
+            .map(product -> ProductDto.of(product.getName(), product.getPrice(), product.getQuantity())).toList();
     }
 
     public int getTotalPrice() {

@@ -1,6 +1,6 @@
 package store.domain.product;
 
-import static store.view.ErrorMessage.*;
+import static store.view.ErrorMessage.INVALID_PRODUCT_FORMAT;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,10 +10,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public record ProductDto(
-        String name,
-        int price,
-        int quantity
+    String name,
+    int price,
+    int quantity
 ) {
+
     private static final Pattern ITEM_PATTERN = Pattern.compile("\\[(.+?)-(\\d+)]");
 
     public static ProductDto of(String name, int price, int quantity) {
@@ -41,9 +42,11 @@ public record ProductDto(
     }
 
     private static void validateInputString(String inputString) {
-        String[] stringProducts =  Stream.of(inputString.split(",")).map(String::trim).toArray(String[]::new);
+        String[] stringProducts = Stream.of(inputString.split(",")).map(String::trim).toArray(String[]::new);
         Arrays.stream(stringProducts).forEach(stringProduct -> {
-            if (!ITEM_PATTERN.matcher(stringProduct).matches()) throw new IllegalArgumentException(INVALID_PRODUCT_FORMAT.getMessage());
+            if (!ITEM_PATTERN.matcher(stringProduct).matches()) {
+                throw new IllegalArgumentException(INVALID_PRODUCT_FORMAT.getMessage());
+            }
         });
     }
 }

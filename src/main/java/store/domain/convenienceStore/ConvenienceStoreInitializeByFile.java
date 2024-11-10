@@ -21,7 +21,8 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
     public Products products() {
         List<Promotion> promotionsFromFile = loadPromotionsFromFile();
         List<Product> productsFromFile = loadProductsFromFile(promotionsFromFile);
-        return new Products(productsFromFile);
+        List<Product> products = makeCommonProduct(productsFromFile);
+        return new Products(products);
     }
 
     private List<Promotion> loadPromotionsFromFile() {
@@ -96,5 +97,17 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
                 .filter(promotion -> promotion.toString().equals(promotionString))
                 .findFirst()
                 .orElse(null);
+    }
+
+    private List<Product> makeCommonProduct(List<Product> productsFromFile) {
+        List<Product> orderedProducts = new ArrayList<>();
+        for (Product product : productsFromFile) {
+            orderedProducts.add(product);
+            CommonProduct commonProduct = new CommonProduct(product.getName(), product.getPrice(), 0);
+            if (product instanceof PromotionProduct && !productsFromFile.contains(commonProduct)) {
+                orderedProducts.add(commonProduct);
+            }
+        }
+        return orderedProducts;
     }
 }

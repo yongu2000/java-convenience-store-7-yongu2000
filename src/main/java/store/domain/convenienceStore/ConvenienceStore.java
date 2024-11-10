@@ -1,5 +1,9 @@
 package store.domain.convenienceStore;
 
+import static store.view.ErrorMessage.NOT_ENOUGH_STOCK;
+import static store.view.ErrorMessage.PRODUCT_NOT_EXISTS;
+import static store.view.ErrorMessage.UNKNOWN_PRODUCT_TYPE;
+
 import store.domain.product.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -64,13 +68,13 @@ public class ConvenienceStore {
         if (product instanceof CommonProduct) {
             return new CommonProduct((CommonProduct) product, quantity);
         }
-        throw new IllegalArgumentException("[ERROR] 알 수 없는 제품 유형입니다.");
+        throw new IllegalArgumentException(UNKNOWN_PRODUCT_TYPE.getMessage());
     }
 
 
     private void checkProductExistence(String productName) {
         boolean exists = products.stream().anyMatch(product -> product.equals(productName));
-        if (!exists) throw new IllegalArgumentException("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
+        if (!exists) throw new IllegalArgumentException(PRODUCT_NOT_EXISTS.getMessage());
     }
 
     private void checkProductQuantity(String productName, int quantity) {
@@ -78,9 +82,8 @@ public class ConvenienceStore {
                 .filter(product -> product.equals(productName))
                 .mapToInt(Product::getQuantity)
                 .sum();
-
         if (totalQuantity < quantity) {
-            throw new IllegalArgumentException("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
+            throw new IllegalArgumentException(NOT_ENOUGH_STOCK.getMessage());
         }
     }
 

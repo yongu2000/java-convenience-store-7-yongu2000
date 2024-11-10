@@ -1,6 +1,9 @@
 package store.domain.order;
 
+import static store.view.ErrorMessage.*;
+
 import java.util.Arrays;
+import store.view.ErrorMessage;
 
 public enum Choice {
     YES("Y"),
@@ -16,6 +19,6 @@ public enum Choice {
         return Arrays.stream(Choice.values())
                 .filter(choice -> input.equals(choice.value))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요."));
+                .orElseThrow(() -> new IllegalArgumentException(INVALID_CHOICE_FORMAT.getMessage()));
     }
 }

@@ -12,7 +12,6 @@ import store.domain.product.Product;
 import store.domain.product.Products;
 import store.domain.product.Promotion;
 import store.domain.product.PromotionProduct;
-import store.view.ErrorMessage;
 
 public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitialize {
 
@@ -20,6 +19,7 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
     private static final String PRODUCTS_FILE_PATH = "src/main/resources/products.md";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final String DELIMITER = ",";
+    private static final String NO_PROMOTION = "null";
 
     @Override
     public Products products() {
@@ -89,7 +89,7 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
     }
 
     private Product createProduct(String name, int price, int quantity, String promotionString, List<Promotion> promotions) {
-        if (promotionString.equals("null")) {
+        if (promotionString.equals(NO_PROMOTION)) {
             return new CommonProduct(name, price, quantity);
         }
         Promotion promotion = findPromotion(promotionString, promotions);
@@ -100,7 +100,7 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
         return promotions.stream()
                 .filter(promotion -> promotion.toString().equals(promotionString))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new IllegalArgumentException(CANNOT_FIND_PROMOTION.getMessage()));
     }
 
     private List<Product> makeCommonProduct(List<Product> productsFromFile) {

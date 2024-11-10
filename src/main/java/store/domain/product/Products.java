@@ -29,13 +29,15 @@ public class Products {
     public PromotionProduct findPromotionProductByName(String productName) {
         return (PromotionProduct) products.stream()
                 .filter(p -> p.equals(productName) && p instanceof PromotionProduct)
-                .findFirst().orElse(null);
+                .findFirst()
+                .orElse(null);
     }
 
     public CommonProduct findCommonProductByName(String productName) {
         return (CommonProduct) products.stream()
                 .filter(p -> p.equals(productName) && p instanceof CommonProduct)
-                .findFirst().orElse(null);
+                .findFirst()
+                .orElse(null);
     }
 
     public void removeCommonProduct(Product product) {

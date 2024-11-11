@@ -65,8 +65,8 @@ public class Products {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Products products1 = (Products) o;
-        return Objects.equals(products, products1.products);
+        Products productsObject = (Products) o;
+        return Objects.equals(products, productsObject.products);
     }
 
     @Override

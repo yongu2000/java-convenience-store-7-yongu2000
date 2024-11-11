@@ -8,7 +8,7 @@ public abstract class Product {
     protected final int price;
     protected int quantity;
 
-    public Product(String name, int price, int quantity) {
+    protected Product(String name, int price, int quantity) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;

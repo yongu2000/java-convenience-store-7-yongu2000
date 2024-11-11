@@ -1,4 +1,4 @@
-package store.domain.convenienceStore;
+package store.domain.conveniencestore;
 
 import store.domain.product.Products;
 

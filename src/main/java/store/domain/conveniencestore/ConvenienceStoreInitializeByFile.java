@@ -1,4 +1,4 @@
-package store.domain.convenienceStore;
+package store.domain.conveniencestore;
 
 import static store.view.ErrorMessage.CANNOT_FIND_PROMOTION;
 import static store.view.ErrorMessage.CANNOT_READ_FILE;
@@ -36,7 +36,7 @@ public class ConvenienceStoreInitializeByFile implements ConvenienceStoreInitial
     private static final int PRODUCT_PRICE = 1;
     private static final int PRODUCT_QUANTITY = 2;
     private static final int PRODUCT_PROMOTION = 3;
-    
+
     @Override
     public Products products() {
         List<Promotion> promotionsFromFile = loadPromotionsFromFile();

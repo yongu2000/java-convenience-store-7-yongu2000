@@ -2,7 +2,7 @@ package store.service;
 
 import java.util.List;
 import java.util.Objects;
-import store.domain.convenienceStore.ConvenienceStore;
+import store.domain.conveniencestore.ConvenienceStore;
 import store.domain.order.Choice;
 import store.domain.product.CommonProduct;
 import store.domain.product.ProductDto;
@@ -66,7 +66,7 @@ public class ConvenienceStoreService {
     private List<PromotionProduct> filterPromotionProducts() {
         return convenienceStore.counter()
             .stream()
-            .filter(product -> product instanceof PromotionProduct)
+            .filter(PromotionProduct.class::isInstance)
             .map(PromotionProduct.class::cast)
             .filter(PromotionProduct::promotionIsApplicable)
             .toList();

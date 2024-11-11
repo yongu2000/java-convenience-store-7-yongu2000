@@ -2,7 +2,7 @@ package store.controller;
 
 import java.util.List;
 import java.util.function.Supplier;
-import store.domain.convenienceStore.ConvenienceStore;
+import store.domain.conveniencestore.ConvenienceStore;
 import store.domain.order.Choice;
 import store.domain.order.Order;
 import store.domain.product.ProductDto;

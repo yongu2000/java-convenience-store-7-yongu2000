@@ -1,4 +1,4 @@
-package store.domain.convenienceStore;
+package store.domain.conveniencestore;
 
 import store.domain.product.CommonProduct;
 import store.domain.product.Products;
@@ -20,7 +20,7 @@ public class MembershipDiscountByRate implements MembershipDiscount {
 
     private int getMembershipDiscountIncludedPromotionProductPrice(Products purchasedProducts) {
         return purchasedProducts.stream()
-            .filter(product -> product instanceof PromotionProduct)
+            .filter(PromotionProduct.class::isInstance)
             .map(PromotionProduct.class::cast)
             .mapToInt(PromotionProduct::getMembershipDiscountIncludedPrice)
             .sum();
@@ -28,7 +28,7 @@ public class MembershipDiscountByRate implements MembershipDiscount {
 
     private int getMembershipDiscountIncludedCommonProductPrice(Products purchasedProducts) {
         return purchasedProducts.stream()
-            .filter(product -> product instanceof CommonProduct)
+            .filter(CommonProduct.class::isInstance)
             .map(CommonProduct.class::cast)
             .mapToInt(CommonProduct::getTotalPrice)
             .sum();

@@ -2,9 +2,9 @@ package store;
 
 import java.util.ArrayList;
 import store.controller.ConvenienceStoreController;
-import store.domain.convenienceStore.ConvenienceStore;
-import store.domain.convenienceStore.ConvenienceStoreInitializeByFile;
-import store.domain.convenienceStore.MembershipDiscountByRate;
+import store.domain.conveniencestore.ConvenienceStore;
+import store.domain.conveniencestore.ConvenienceStoreInitializeByFile;
+import store.domain.conveniencestore.MembershipDiscountByRate;
 import store.domain.product.Products;
 import store.service.ConvenienceStoreService;
 import store.view.InputView;

@@ -1,16 +1,20 @@
 package store.domain.order;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import store.domain.convenienceStore.MembershipDiscountByRate;
-import store.domain.product.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import store.domain.conveniencestore.MembershipDiscountByRate;
+import store.domain.product.CommonProduct;
+import store.domain.product.Product;
+import store.domain.product.Products;
+import store.domain.product.Promotion;
+import store.domain.product.PromotionProduct;
+import store.domain.product.ReceiptProduct;
 
 class OrderTest {
 
@@ -20,15 +24,15 @@ class OrderTest {
     void init() {
         List<Product> productList = new ArrayList<>();
         Promotion promotion = Promotion.of("탄산2+1",
-                2,
-                1,
-                LocalDate.of(2024, 1, 1),
-                LocalDate.of(2024, 12, 31));
+            2,
+            1,
+            LocalDate.of(2024, 1, 1),
+            LocalDate.of(2024, 12, 31));
         Promotion promotion2 = Promotion.of("MD추천상품",
-                1,
-                1,
-                LocalDate.of(2024, 1, 1),
-                LocalDate.of(2024, 12, 31));
+            1,
+            1,
+            LocalDate.of(2024, 1, 1),
+            LocalDate.of(2024, 12, 31));
         Product promotionProduct = new PromotionProduct("콜라", 1000, 10, promotion);
         Product promotionProduct2 = new PromotionProduct("사이다", 1000, 3, promotion);
         Product promotionProduct3 = new PromotionProduct("오렌지주스", 1800, 2, promotion2);

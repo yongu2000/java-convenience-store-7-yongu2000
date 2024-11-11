@@ -1,4 +1,4 @@
-package store.domain.convenienceStore;
+package store.domain.conveniencestore;
 
 import static store.view.ErrorMessage.NOT_ENOUGH_STOCK;
 import static store.view.ErrorMessage.PRODUCT_NOT_EXISTS;
@@ -66,12 +66,12 @@ public class ConvenienceStore {
     }
 
     private Product createProductsWithQuantity(Product product, int quantity) {
-        
-        if (product instanceof PromotionProduct) {
-            return new PromotionProduct((PromotionProduct) product, quantity);
+
+        if (product instanceof PromotionProduct promotionProduct) {
+            return new PromotionProduct(promotionProduct, quantity);
         }
-        if (product instanceof CommonProduct) {
-            return new CommonProduct((CommonProduct) product, quantity);
+        if (product instanceof CommonProduct commonProduct) {
+            return new CommonProduct(commonProduct, quantity);
         }
         throw new IllegalArgumentException(UNKNOWN_PRODUCT_TYPE.getMessage());
     }

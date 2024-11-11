@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import store.domain.convenienceStore.MembershipDiscount;
+import store.domain.conveniencestore.MembershipDiscount;
 import store.domain.product.Product;
 import store.domain.product.Products;
 import store.domain.product.PromotionProduct;
@@ -28,10 +28,10 @@ public class Order {
         Map<String, Integer> totalProductsPrice = createTotalProductPriceData();
         Map<String, Integer> totalProductsQuantity = createTotalProductQuantityData();
         List<Product> products = new ArrayList<>();
-        totalProductsPrice.keySet().forEach(productName -> {
+        totalProductsPrice.keySet().forEach(productName ->
             products.add(new ReceiptProduct(productName, totalProductsPrice.get(productName),
-                totalProductsQuantity.get(productName)));
-        });
+                totalProductsQuantity.get(productName)))
+        );
         return new Products(products);
     }
 
@@ -54,7 +54,7 @@ public class Order {
     public Products getReceiptPromotion() {
         List<Product> products = new ArrayList<>();
         purchasedProducts.stream()
-            .filter(product -> product instanceof PromotionProduct)
+            .filter(PromotionProduct.class::isInstance)
             .map(PromotionProduct.class::cast)
             .filter(PromotionProduct::promotionIsApplicable)
             .filter(product -> (product.getPromotionDiscountQuantity() > 0))
